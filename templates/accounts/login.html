@@ -1,0 +1,223 @@
+<!-- templates/accounts/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing System | Secure Access</title>
+    <!-- Technical Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0f1115;
+            --card-bg: #1a1d23;
+            --neon-blue: #00d2ff;
+            --text-gray: #94a3b8;
+            --input-bg: #252932;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            font-family: 'JetBrains Mono', monospace; /* Professional technical font */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* The Dashboard Card */
+        .auth-card {
+            background: var(--card-bg);
+            width: 380px;
+            padding: 2.5rem;
+            border-radius: 4px; /* Sharp corners for industrial look */
+            border-top: 4px solid var(--neon-blue);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-header {
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h1 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .system-status {
+            font-size: 0.7rem;
+            color: var(--neon-blue);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .blink {
+            width: 6px;
+            height: 6px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid #333b48;
+            padding: 12px 15px;
+            color: white;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        /* Eye Icon Button */
+        .eye-toggle {
+            position: absolute;
+            right: 12px;
+            top: 36px; /* Adjusted for label */
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .eye-toggle:hover {
+            color: var(--neon-blue);
+        }
+
+        .error-alert {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 10px;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--neon-blue);
+            color: var(--bg-dark);
+            border: none;
+            padding: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit:hover {
+            background: #00b4db;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+        }
+
+        .version-tag {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.65rem;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="auth-header">
+        <h1>System Access</h1>
+        <div class="system-status">
+            <div class="blink"></div> DATABASE CONNECTED
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="error-alert">
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-group">
+            <span class="form-label">OPERATOR_ID</span>
+            <input type="text" name="username" placeholder="Enter Username" required autofocus>
+        </div>
+
+        <div class="input-group">
+            <span class="form-label">ACCESS_KEY</span>
+            <input type="password" name="password" id="password" placeholder="••••••••" required>
+            <button type="button" class="eye-toggle" id="togglePassword">
+                <i class="fa-solid fa-eye" id="eyeIcon"></i>
+            </button>
+        </div>
+
+        <button type="submit" class="btn-submit">Initialize Session</button>
+    </form>
+
+    <div class="version-tag">
+        CORE_V2.6 // SECURE_SHELL_ENABLED
+    </div>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    toggleBtn.addEventListener('click', function () {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        
+        // Switch Icons
+        eyeIcon.classList.toggle('fa-eye');
+        eyeIcon.classList.toggle('fa-eye-slash');
+        
+        // Visual feedback for technical feel
+        this.style.color = isPassword ? 'var(--neon-blue)' : 'var(--text-gray)';
+    });
+</script>
+
+</body>
+</html>

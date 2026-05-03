@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex" style="min-height:100vh;">
+
+    <!-- Sidebar -->
+    <div class="bg-dark text-white p-3" style="width:250px;">
+        <h4 class="text-center mb-4">Admin Panel</h4>
+
+        <ul class="nav flex-column">
+
+            <li class="nav-item mb-2">
+                <a href="{% url 'admin_dashboard' %}" class="nav-link text-white">
+                    Dashboard
+                </a>
+            </li>
+
+            <li class="nav-item mb-2">
+                <a href="{% url 'customer_list' %}" class="nav-link text-white">
+                    Customers
+                </a>
+            </li>
+
+            <li class="nav-item mb-2">
+                <a href="{% url 'product_list' %}" class="nav-link text-white">
+                    Products
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'add_category' %}" class="nav-link text-white">
+        Add Category
+    </a>
+</li>
+<a href="{% url 'category_list' %}" class="nav-link text-white">
+    Categories
+</a>
+            <li class="nav-item mb-2">
+                <a href="{% url 'invoice_list' %}" class="nav-link text-white">
+                    Invoices
+                </a>
+            </li>
+
+            <hr class="bg-light">
+
+            <li class="nav-item">
+                <a href="{% url 'logout' %}" class="nav-link text-danger">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1">
+
+        <!-- Topbar -->
+        <div class="bg-light p-3 d-flex justify-content-between align-items-center shadow-sm">
+            <h5 class="mb-0">Billing System</h5>
+
+            <div>
+                <strong>{{ request.user.username }}</strong>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="p-4">
+            {% block admin_content %}{% endblock %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+<!-- templates/accounts/staff_dashboard.html -->
+{% extends 'layouts/staff_base.html' %}
+
+{% block staff_content %}
+
+<h2>Staff Dashboard</h2>
+<p>Welcome, {{ request.user.username }}</p>
+
+{% endblock %}

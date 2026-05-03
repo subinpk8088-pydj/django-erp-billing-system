@@ -1,0 +1,15 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Add Customer</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+
+{% endblock %}

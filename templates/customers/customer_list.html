@@ -1,0 +1,97 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Customers</h2>
+
+<form method="GET" class="mb-3">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search by name">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<a href="{% url 'add_customer' %}" class="btn btn-success mb-3">Add Customer</a>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>City</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for customer in page_obj %}
+    <tr>
+        <td>{{ customer.name }}</td>
+        <td>{{ customer.phone }}</td>
+        <td>{{ customer.city }}</td>
+        <td>
+            <a href="{% url 'edit_customer' customer.id %}" class="btn btn-warning btn-sm">Edit</a>
+<button 
+    class="btn btn-danger btn-sm delete-btn"
+    data-id="{{ customer.id }}"
+    data-name="{{ customer.name }}"
+    data-bs-toggle="modal"
+    data-bs-target="#deleteModal">
+    Delete
+</button>        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Pagination -->
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}">Previous</a>
+    {% endif %}
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ search_query }}">Next</a>
+    {% endif %}
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Delete Customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p id="delete-text"></p>
+      </div>
+
+      <div class="modal-footer">
+        <form method="POST" id="delete-form">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        </form>
+
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function () {
+
+        let customerId = this.getAttribute('data-id');
+        let customerName = this.getAttribute('data-name');
+
+        // update text
+        document.getElementById('delete-text').innerText =
+            "Are you sure you want to delete " + customerName + "?";
+
+        // update form action dynamically
+        document.getElementById('delete-form').action =
+            "/customers/delete/" + customerId + "/";
+    });
+});
+</script>
+{% endblock %}

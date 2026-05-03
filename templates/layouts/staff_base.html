@@ -1,0 +1,9 @@
+<!-- templates/layouts/staff_base.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Staff Dashboard</h3>
+    {% block staff_content %}{% endblock %}
+</div>
+{% endblock %}

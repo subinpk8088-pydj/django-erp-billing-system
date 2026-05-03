@@ -1,0 +1,117 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Admin Dashboard</h2>
+<p>Welcome, {{ request.user.username }}</p>
+
+<hr>
+
+<!-- KPI CARDS -->
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="card p-3 bg-primary text-white">
+            <h5>Total Revenue</h5>
+            <h3>₹{{ total_revenue }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 bg-success text-white">
+            <h5>Total Invoices</h5>
+            <h3>{{ total_invoices }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 bg-dark text-white">
+            <h5>Total Products</h5>
+            <h3>{{ total_products }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 bg-danger text-white">
+            <h5>Low Stock</h5>
+            <h3>{{ low_stock_count }}</h3>
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<!-- SALES CHART -->
+<h4>Sales Overview</h4>
+
+<canvas id="salesChart" height="100"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('salesChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ dates|safe }},
+            datasets: [{
+                label: 'Revenue',
+                data: {{ totals|safe }},
+                borderWidth: 2,
+                fill: false
+            }]
+        }
+    });
+</script>
+
+<hr>
+
+<!-- LOW STOCK -->
+<h4>Low Stock Products</h4>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Stock</th>
+    </tr>
+
+    {% for product in low_stock_products %}
+    <tr>
+        <td>{{ product.name }}</td>
+        <td class="text-danger">{{ product.stock }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">No low stock items</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<!-- RECENT INVOICES -->
+<h4>Recent Invoices</h4>
+
+<table class="table">
+    <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Total</th>
+    </tr>
+
+    {% for inv in recent_invoices %}
+    <tr>
+        <td>{{ inv.id }}</td>
+        <td>{{ inv.customer.name }}</td>
+        <td>₹{{ inv.grand_total }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3">No invoices</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

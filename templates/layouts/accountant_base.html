@@ -1,0 +1,9 @@
+<!-- templates/layouts/accountant_base.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Accountant Panel</h3>
+    {% block accountant_content %}{% endblock %}
+</div>
+{% endblock %}

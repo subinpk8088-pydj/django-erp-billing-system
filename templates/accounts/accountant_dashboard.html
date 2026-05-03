@@ -1,0 +1,9 @@
+<!-- templates/accounts/accountant_dashboard.html -->
+{% extends 'layouts/accountant_base.html' %}
+
+{% block accountant_content %}
+
+<h2>Accountant Dashboard</h2>
+<p>Welcome, {{ request.user.username }}</p>
+
+{% endblock %}

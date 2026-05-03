@@ -1,0 +1,74 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Invoice #{{ invoice.id }}</h2>
+
+        <div>
+            <a href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-secondary btn-sm">
+                Download PDF
+            </a>
+
+            {% if invoice.status != 'paid' %}
+            <a href="{% url 'mark_paid' invoice.id %}" class="btn btn-success btn-sm">
+                Mark as Paid
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    <p><strong>Customer:</strong> {{ invoice.customer.name }}</p>
+    <p><strong>Date:</strong> {{ invoice.date|date:"d M Y, H:i" }}</p>
+
+    <p>
+        <strong>Status:</strong>
+        {% if invoice.status == 'paid' %}
+            <span class="badge bg-success">Paid</span>
+        {% elif invoice.status == 'partial' %}
+            <span class="badge bg-warning text-dark">Partial</span>
+        {% else %}
+            <span class="badge bg-danger">Unpaid</span>
+        {% endif %}
+    </p>
+
+    <hr>
+
+    <h4>Items</h4>
+
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Price (₹)</th>
+                <th>Total (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.get_total }}</td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <div class="text-end">
+        <p><strong>Subtotal:</strong> ₹{{ invoice.total_amount }}</p>
+        <p><strong>GST (18%):</strong> ₹{{ invoice.gst_amount }}</p>
+        <h4><strong>Grand Total: ₹{{ invoice.grand_total }}</strong></h4>
+    </div>
+
+</div>
+
+{% endblock %}
