@@ -4,69 +4,144 @@
 
 <div class="d-flex" style="min-height:100vh;">
 
-    <!-- Sidebar -->
-    <div class="bg-dark text-white p-3" style="width:250px;">
-        <h4 class="text-center mb-4">Admin Panel</h4>
+    <!-- SIDEBAR -->
+    <div class="bg-dark text-white p-3 shadow" style="width:260px;">
+
+        <h3 class="text-center mb-4 border-bottom pb-3">
+            ERP Admin
+        </h3>
 
         <ul class="nav flex-column">
 
+            <!-- DASHBOARD -->
             <li class="nav-item mb-2">
-                <a href="{% url 'admin_dashboard' %}" class="nav-link text-white">
-                    Dashboard
+                <a href="{% url 'admin_dashboard' %}"
+                   class="nav-link text-white">
+                    📊 Dashboard
+                </a>
+            </li>
+
+            <!-- CUSTOMERS -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'customer_list' %}"
+                   class="nav-link text-white">
+                    👥 Customers
+                </a>
+            </li>
+
+            <!-- PRODUCTS -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'product_list' %}"
+                   class="nav-link text-white">
+                    📦 Products
+                </a>
+            </li>
+
+            <!-- CATEGORIES -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'category_list' %}"
+                   class="nav-link text-white">
+                    🗂 Categories
                 </a>
             </li>
 
             <li class="nav-item mb-2">
-                <a href="{% url 'customer_list' %}" class="nav-link text-white">
-                    Customers
+                <a href="{% url 'add_category' %}"
+                   class="nav-link text-white">
+                    ➕ Add Category
                 </a>
             </li>
 
+            <!-- INVOICES -->
             <li class="nav-item mb-2">
-                <a href="{% url 'product_list' %}" class="nav-link text-white">
-                    Products
+                <a href="{% url 'invoice_list' %}"
+                   class="nav-link text-white">
+                    🧾 Invoices
                 </a>
             </li>
-            <li>
-    <a href="{% url 'add_category' %}" class="nav-link text-white">
-        Add Category
+
+            <!-- LOW STOCK -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'product_list' %}"
+                   class="nav-link text-warning">
+                    ⚠ Low Stock Alerts
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+
+    <a href="{% url 'supplier_list' %}"
+       class="nav-link text-white">
+
+        Suppliers
+
     </a>
+
 </li>
-<a href="{% url 'category_list' %}" class="nav-link text-white">
-    Categories
-</a>
-            <li class="nav-item mb-2">
-                <a href="{% url 'invoice_list' %}" class="nav-link text-white">
-                    Invoices
-                </a>
+<li class="nav-item mb-2">
+
+    <a href="{% url 'purchase_list' %}"
+       class="nav-link text-white">
+
+        Purchases
+
+    </a>
+
+</li>
+            <hr class="border-light">
+
+            <!-- USER INFO -->
+            <li class="nav-item mb-3">
+                <small class="text-secondary">
+                    Logged in as:
+                </small>
+
+                <div class="fw-bold">
+                    {{ request.user.username }}
+                </div>
             </li>
 
-            <hr class="bg-light">
-
+            <!-- LOGOUT -->
             <li class="nav-item">
-                <a href="{% url 'logout' %}" class="nav-link text-danger">
-                    Logout
+                <a href="{% url 'logout' %}"
+                   class="nav-link text-danger">
+                    🚪 Logout
                 </a>
             </li>
 
         </ul>
+
     </div>
 
-    <!-- Main Content -->
-    <div class="flex-grow-1">
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow-1 bg-light">
 
-        <!-- Topbar -->
-        <div class="bg-light p-3 d-flex justify-content-between align-items-center shadow-sm">
-            <h5 class="mb-0">Billing System</h5>
+        <!-- TOPBAR -->
+        <div class="bg-white p-3 shadow-sm d-flex justify-content-between align-items-center">
 
             <div>
-                <strong>{{ request.user.username }}</strong>
+                <h4 class="mb-0">
+                    Billing ERP System
+                </h4>
             </div>
+
+            <div>
+                <span class="me-3 fw-semibold">
+                    {{ request.user.username }}
+                </span>
+
+                <span class="badge bg-success">
+                    {{ request.user.role|title }}
+                </span>
+            </div>
+
         </div>
 
-        <!-- Page Content -->
+        <!-- PAGE CONTENT -->
         <div class="p-4">
-            {% block admin_content %}{% endblock %}
+
+            {% block admin_content %}
+            {% endblock %}
+
         </div>
 
     </div>

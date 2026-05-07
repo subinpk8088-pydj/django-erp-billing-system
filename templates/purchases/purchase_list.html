@@ -1,0 +1,53 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Purchases</h2>
+
+<a href="{% url 'create_purchase' %}"
+   class="btn btn-primary mb-3">
+
+    Create Purchase
+
+</a>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Invoice No</th>
+        <th>Supplier</th>
+        <th>Total</th>
+        <th>Date</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for purchase in purchases %}
+
+    <tr>
+
+        <td>{{ purchase.invoice_number }}</td>
+
+        <td>{{ purchase.supplier.name }}</td>
+
+        <td>₹{{ purchase.total_amount }}</td>
+
+        <td>{{ purchase.date }}</td>
+
+        <td>
+
+            <a href="{% url 'purchase_detail' purchase.id %}"
+               class="btn btn-info btn-sm">
+
+               View
+
+            </a>
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

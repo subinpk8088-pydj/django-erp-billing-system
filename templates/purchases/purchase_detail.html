@@ -1,0 +1,51 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Purchase Detail</h2>
+
+<p>
+    <strong>Invoice:</strong>
+    {{ purchase.invoice_number }}
+</p>
+
+<p>
+    <strong>Supplier:</strong>
+    {{ purchase.supplier.name }}
+</p>
+
+<p>
+    <strong>Total:</strong>
+    ₹{{ purchase.total_amount }}
+</p>
+
+<hr>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Purchase Price</th>
+        <th>Total</th>
+    </tr>
+
+    {% for item in purchase.items.all %}
+
+    <tr>
+
+        <td>{{ item.product.name }}</td>
+
+        <td>{{ item.quantity }}</td>
+
+        <td>{{ item.purchase_price }}</td>
+
+        <td>{{ item.get_total }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

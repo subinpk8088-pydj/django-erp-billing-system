@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     'customers',
     'products',
     'invoices',
+    'suppliers',
+    'purchases',
 ]
 
 

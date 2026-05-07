@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from accounts.views import admin_required
+from accounts.decorators import admin_required
 from .models import Product
 from .forms import ProductForm
 

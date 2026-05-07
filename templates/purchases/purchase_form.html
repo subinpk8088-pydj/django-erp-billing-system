@@ -1,0 +1,36 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Create Purchase</h2>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <hr>
+
+    {{ formset.management_form }}
+
+    {% for form in formset %}
+
+        <div class="border p-3 mb-3">
+
+            {{ form.as_p }}
+
+        </div>
+
+    {% endfor %}
+
+    <button type="submit"
+            class="btn btn-success">
+
+        Save Purchase
+
+    </button>
+
+</form>
+
+{% endblock %}
