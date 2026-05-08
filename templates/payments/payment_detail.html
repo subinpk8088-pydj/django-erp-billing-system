@@ -1,0 +1,39 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Payment Details</h2>
+
+<hr>
+
+<p>
+    <strong>Invoice:</strong>
+    INV-{{ payment.invoice.id }}
+</p>
+
+<p>
+    <strong>Amount:</strong>
+    ₹{{ payment.amount }}
+</p>
+
+<p>
+    <strong>Method:</strong>
+    {{ payment.payment_method }}
+</p>
+
+<p>
+    <strong>Reference:</strong>
+    {{ payment.reference_number }}
+</p>
+
+<p>
+    <strong>Received By:</strong>
+    {{ payment.received_by }}
+</p>
+
+<p>
+    <strong>Date:</strong>
+    {{ payment.created_at }}
+</p>
+
+{% endblock %}

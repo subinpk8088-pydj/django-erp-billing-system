@@ -1,0 +1,54 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Payments</h2>
+
+<a href="{% url 'create_payment' %}"
+   class="btn btn-success mb-3">
+
+    Add Payment
+
+</a>
+
+<table class="table table-bordered">
+
+    <tr>
+
+        <th>ID</th>
+        <th>Invoice</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Date</th>
+
+    </tr>
+
+    {% for payment in payments %}
+
+    <tr>
+
+        <td>{{ payment.id }}</td>
+
+        <td>
+            INV-{{ payment.invoice.id }}
+        </td>
+
+        <td>
+            ₹{{ payment.amount }}
+        </td>
+
+        <td>
+            {{ payment.payment_method }}
+        </td>
+
+        <td>
+            {{ payment.created_at }}
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

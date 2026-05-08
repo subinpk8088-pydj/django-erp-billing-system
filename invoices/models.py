@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 
 from customers.models import Customer
@@ -8,8 +10,11 @@ from accounts.models import CustomUser
 class Invoice(models.Model):
 
     STATUS_CHOICES = (
+
         ('paid', 'Paid'),
+
         ('unpaid', 'Unpaid'),
+
         ('partial', 'Partial Payment'),
     )
 
@@ -25,22 +30,24 @@ class Invoice(models.Model):
         blank=True
     )
 
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(
+        auto_now_add=True
+    )
 
     total_amount = models.DecimalField(
-        max_digits=10,
+        max_digits=12,
         decimal_places=2,
         default=0
     )
 
     gst_amount = models.DecimalField(
-        max_digits=10,
+        max_digits=12,
         decimal_places=2,
         default=0
     )
 
     grand_total = models.DecimalField(
-        max_digits=10,
+        max_digits=12,
         decimal_places=2,
         default=0
     )
@@ -51,8 +58,64 @@ class Invoice(models.Model):
         default='unpaid'
     )
 
+    class Meta:
+
+        ordering = ['-id']
+
     def __str__(self):
+
         return f"Invoice #{self.id}"
+
+    # 🔥 TOTAL PAID
+    @property
+    def total_paid(self):
+
+        return sum(
+            payment.amount
+            for payment in self.payments.all()
+        )
+
+    # 🔥 BALANCE DUE
+    @property
+    def balance_due(self):
+
+        return self.grand_total - self.total_paid
+
+    # 🔥 AUTO PAYMENT STATUS
+    def update_payment_status(self):
+
+        if self.total_paid <= Decimal('0.00'):
+
+            self.status = 'unpaid'
+
+        elif self.total_paid < self.grand_total:
+
+            self.status = 'partial'
+
+        else:
+
+            self.status = 'paid'
+
+        self.save()
+
+    # 🔥 RECALCULATE TOTALS
+    def calculate_totals(self):
+
+        subtotal = Decimal('0.00')
+
+        for item in self.items.all():
+
+            subtotal += item.get_total()
+
+        gst = subtotal * Decimal('0.18')
+
+        grand_total = subtotal + gst
+
+        self.total_amount = subtotal
+        self.gst_amount = gst
+        self.grand_total = grand_total
+
+        self.save()
 
 
 class InvoiceItem(models.Model):
@@ -71,12 +134,22 @@ class InvoiceItem(models.Model):
     quantity = models.PositiveIntegerField()
 
     price = models.DecimalField(
-        max_digits=10,
+        max_digits=12,
         decimal_places=2
     )
 
+    class Meta:
+
+        ordering = ['id']
+
+    # 🔥 ITEM TOTAL
     def get_total(self):
+
         return self.quantity * self.price
 
     def __str__(self):
-        return f"{self.product.name} - {self.invoice.id}"
+
+        return (
+            f"{self.product.name} "
+            f"- Invoice #{self.invoice.id}"
+        )

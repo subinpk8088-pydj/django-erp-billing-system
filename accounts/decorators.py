@@ -1,58 +1,63 @@
-from django.http import HttpResponseForbidden
+from functools import wraps
+
 from django.shortcuts import redirect
 
+from django.http import HttpResponseForbidden
 
-def admin_required(view_func):
 
-    def wrapper(request, *args, **kwargs):
+def role_required(allowed_roles):
 
-        if not request.user.is_authenticated:
-            return redirect('login')
+    def decorator(view_func):
 
-        # 🔥 superuser bypass
-        if request.user.is_superuser:
-            return view_func(request, *args, **kwargs)
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
 
-        # 🔥 custom role check
-        if request.user.role != 'admin':
-            return HttpResponseForbidden(
-                "Admin access required"
+            # 🔥 authentication check
+            if not request.user.is_authenticated:
+
+                return redirect('login')
+
+            # 🔥 superuser bypass
+            if request.user.is_superuser:
+
+                return view_func(
+                    request,
+                    *args,
+                    **kwargs
+                )
+
+            # 🔥 role check
+            if request.user.role not in allowed_roles:
+
+                return HttpResponseForbidden(
+                    "Permission denied"
+                )
+
+            return view_func(
+                request,
+                *args,
+                **kwargs
             )
 
-        return view_func(request, *args, **kwargs)
+        return wrapper
 
-    return wrapper
-
-
-def staff_required(view_func):
-
-    def wrapper(request, *args, **kwargs):
-
-        if not request.user.is_authenticated:
-            return redirect('login')
-
-        if request.user.role != 'staff':
-            return HttpResponseForbidden(
-                "Staff access required"
-            )
-
-        return view_func(request, *args, **kwargs)
-
-    return wrapper
+    return decorator
 
 
-def accountant_required(view_func):
+# 🔥 ADMIN ONLY
+admin_required = role_required([
+    'admin'
+])
 
-    def wrapper(request, *args, **kwargs):
 
-        if not request.user.is_authenticated:
-            return redirect('login')
+# 🔥 STAFF ONLY
+staff_required = role_required([
+    'staff'
+])
 
-        if request.user.role != 'accountant':
-            return HttpResponseForbidden(
-                "Accountant access required"
-            )
 
-        return view_func(request, *args, **kwargs)
-
-    return wrapper
+# 🔥 ACCOUNTANT + ADMIN
+accountant_required = role_required([
+    'admin',
+    'accountant'
+])

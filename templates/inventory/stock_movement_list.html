@@ -1,0 +1,51 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2 class="mb-4">
+    Inventory Ledger
+</h2>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Date</th>
+        <th>Product</th>
+        <th>Type</th>
+        <th>Quantity</th>
+    </tr>
+
+    {% for movement in movements %}
+
+    <tr>
+        <td>{{ movement.created_at }}</td>
+
+        <td>{{ movement.product.name }}</td>
+
+        <td>
+
+            {% if movement.movement_type == 'IN' %}
+
+                <span class="badge bg-success">
+                    STOCK IN
+                </span>
+
+            {% else %}
+
+                <span class="badge bg-danger">
+                    STOCK OUT
+                </span>
+
+            {% endif %}
+
+        </td>
+
+        <td>{{ movement.quantity }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

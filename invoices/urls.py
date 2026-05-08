@@ -11,4 +11,15 @@ path('create/', create_invoice, name='create_invoice'),
 path('<int:pk>/', invoice_detail, name='invoice_detail'),
 path('<int:pk>/paid/', mark_paid, name='mark_paid'),
 path('<int:pk>/pdf/', invoice_pdf, name='invoice_pdf'),
+path(
+    'edit/<int:pk>/',
+    edit_invoice,
+    name='edit_invoice'
+),
+
+path(
+    'delete/<int:pk>/',
+    delete_invoice,
+    name='delete_invoice'
+),
 ]

@@ -22,4 +22,15 @@ urlpatterns = [
         purchase_detail,
         name='purchase_detail'
     ),
+    path(
+    'edit/<int:pk>/',
+    edit_purchase,
+    name='edit_purchase'
+),
+
+path(
+    'delete/<int:pk>/',
+    delete_purchase,
+    name='delete_purchase'
+),
 ]

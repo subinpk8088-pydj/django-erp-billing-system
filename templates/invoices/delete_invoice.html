@@ -1,0 +1,25 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Delete Invoice</h2>
+
+<p>
+    Are you sure you want to delete
+    Invoice #{{ invoice.id }}?
+</p>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <button type="submit"
+            class="btn btn-danger">
+
+        Delete Invoice
+
+    </button>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Expenses</h2>
+
+<div class="mb-3">
+
+    <a href="{% url 'create_expense' %}"
+       class="btn btn-primary">
+
+        Add Expense
+
+    </a>
+
+    <a href="{% url 'expense_category_list' %}"
+       class="btn btn-dark">
+
+        Categories
+
+    </a>
+
+</div>
+
+<div class="card p-3 mb-4">
+
+    <h5>
+        Total Expenses:
+        ₹{{ total_expense }}
+    </h5>
+
+</div>
+
+<table class="table table-bordered">
+
+    <tr>
+
+        <th>Date</th>
+
+        <th>Category</th>
+
+        <th>Title</th>
+
+        <th>Amount</th>
+
+        <th>Created By</th>
+
+        <th>Action</th>
+
+    </tr>
+
+    {% for expense in expenses %}
+
+    <tr>
+
+        <td>
+            {{ expense.expense_date }}
+        </td>
+
+        <td>
+            {{ expense.category.name }}
+        </td>
+
+        <td>
+            {{ expense.title }}
+        </td>
+
+        <td class="text-danger">
+            ₹{{ expense.amount }}
+        </td>
+
+        <td>
+            {{ expense.created_by }}
+        </td>
+
+        <td>
+
+            <a href="{% url 'delete_expense' expense.id %}"
+               class="btn btn-danger btn-sm">
+
+                Delete
+
+            </a>
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block admin_content %}
+
+<h2>Delete Expense</h2>
+
+<div class="card p-4">
+
+    <p>
+
+        Are you sure you want to delete:
+
+        <strong>
+            {{ expense.title }}
+        </strong> ?
+
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button type="submit"
+                class="btn btn-danger">
+
+            Confirm Delete
+
+        </button>
+
+        <a href="{% url 'expense_list' %}"
+           class="btn btn-secondary">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

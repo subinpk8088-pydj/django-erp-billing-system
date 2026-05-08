@@ -4,34 +4,64 @@
 
 <h2>Invoices</h2>
 
-<a href="{% url 'create_invoice' %}" class="btn btn-primary mb-3">
+<a href="{% url 'create_invoice' %}"
+   class="btn btn-success mb-3">
+
     Create Invoice
+
 </a>
 
-<table class="table">
+<table class="table table-bordered">
+
     <tr>
         <th>ID</th>
         <th>Customer</th>
         <th>Total</th>
-        <th>GST</th>
-        <th>Grand Total</th>
-        <th>Action</th>
+        <th>Status</th>
+        <th>Actions</th>
     </tr>
 
-    {% for inv in invoices %}
+    {% for invoice in invoices %}
+
     <tr>
-        <td>{{ inv.id }}</td>
-        <td>{{ inv.customer.name }}</td>
-        <td>{{ inv.total_amount }}</td>
-        <td>{{ inv.gst_amount }}</td>
-        <td>{{ inv.grand_total }}</td>
+
+        <td>{{ invoice.id }}</td>
+
+        <td>{{ invoice.customer.name }}</td>
+
+        <td>₹{{ invoice.grand_total }}</td>
+
+        <td>{{ invoice.status }}</td>
+
         <td>
-    <a href="{% url 'invoice_detail' inv.id %}" class="btn btn-info btn-sm">
-        View
-    </a>
-</td>
+
+            <a href="{% url 'invoice_detail' invoice.id %}"
+               class="btn btn-info btn-sm">
+
+                View
+
+            </a>
+
+            <a href="{% url 'edit_invoice' invoice.id %}"
+               class="btn btn-warning btn-sm">
+
+                Edit
+
+            </a>
+
+            <a href="{% url 'delete_invoice' invoice.id %}"
+               class="btn btn-danger btn-sm">
+
+                Delete
+
+            </a>
+
+        </td>
+
     </tr>
+
     {% endfor %}
+
 </table>
 
 {% endblock %}
