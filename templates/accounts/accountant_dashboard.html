@@ -1,9 +1,186 @@
-<!-- templates/accounts/accountant_dashboard.html -->
 {% extends 'layouts/accountant_base.html' %}
 
 {% block accountant_content %}
 
-<h2>Accountant Dashboard</h2>
-<p>Welcome, {{ request.user.username }}</p>
+<div class="container-fluid">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Accountant Dashboard
+            </h2>
+
+            <p class="text-muted mb-0">
+                Welcome, {{ request.user.username }}
+            </p>
+
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+
+    <span class="badge bg-success p-2">
+        Accountant Panel
+    </span>
+
+    <a href="{% url 'logout' %}"
+       class="btn btn-danger btn-sm">
+
+        🚪 Logout
+
+    </a>
+
+</div>
+
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="row g-4 mb-4">
+
+        <!-- PAYMENTS -->
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <h1>💳</h1>
+
+                    <h5 class="fw-bold">
+                        Payments
+                    </h5>
+
+                    <p class="text-muted">
+                        Track and manage payments
+                    </p>
+
+                    <a href="{% url 'payment_list' %}"
+                       class="btn btn-success">
+
+                        View Payments
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- EXPENSES -->
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <h1>💸</h1>
+
+                    <h5 class="fw-bold">
+                        Expenses
+                    </h5>
+
+                    <p class="text-muted">
+                        Manage business expenses
+                    </p>
+
+                    <a href="{% url 'expense_list' %}"
+                       class="btn btn-danger">
+
+                        View Expenses
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- INVOICES -->
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <h1>🧾</h1>
+
+                    <h5 class="fw-bold">
+                        Invoices
+                    </h5>
+
+                    <p class="text-muted">
+                        Verify invoice payments
+                    </p>
+
+                    <a href="{% url 'invoice_list' %}"
+                       class="btn btn-primary">
+
+                        View Invoices
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ACCOUNT SUMMARY -->
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">
+                Accountant Permissions
+            </h5>
+
+            <ul class="list-group">
+
+                <li class="list-group-item">
+                    ✅ Payment Management
+                </li>
+
+                <li class="list-group-item">
+                    ✅ Expense Management
+                </li>
+
+                <li class="list-group-item">
+                    ✅ Invoice Verification
+                </li>
+
+                <li class="list-group-item">
+                    ✅ Financial Monitoring
+                </li>
+
+                <li class="list-group-item">
+                    ❌ User Management
+                </li>
+
+                <li class="list-group-item">
+                    ❌ Product Category Management
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- FINANCIAL NOTICE -->
+    <div class="alert alert-warning shadow-sm">
+
+        <strong>Attention:</strong>
+
+        Verify all transactions carefully before marking invoices as paid.
+
+    </div>
+
+</div>
 
 {% endblock %}
