@@ -1,8 +1,6 @@
-from functools import wraps
-
 from django.shortcuts import redirect
-
 from django.http import HttpResponseForbidden
+from functools import wraps
 
 
 def role_required(allowed_roles):
@@ -12,21 +10,14 @@ def role_required(allowed_roles):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
 
-            # 🔥 authentication check
             if not request.user.is_authenticated:
-
                 return redirect('login')
 
-            # 🔥 superuser bypass
+            # SUPERUSER BYPASS
             if request.user.is_superuser:
+                return view_func(request, *args, **kwargs)
 
-                return view_func(
-                    request,
-                    *args,
-                    **kwargs
-                )
-
-            # 🔥 role check
+            # ROLE CHECK
             if request.user.role not in allowed_roles:
 
                 return HttpResponseForbidden(
@@ -44,20 +35,22 @@ def role_required(allowed_roles):
     return decorator
 
 
-# 🔥 ADMIN ONLY
-admin_required = role_required([
-    'admin'
-])
+# ADMIN ONLY
+def admin_required(view_func):
+    return role_required(
+        ['admin']
+    )(view_func)
 
 
-# 🔥 STAFF ONLY
-staff_required = role_required([
-    'staff'
-])
+# ACCOUNTANT + ADMIN
+def accountant_required(view_func):
+    return role_required(
+        ['admin', 'accountant']
+    )(view_func)
 
 
-# 🔥 ACCOUNTANT + ADMIN
-accountant_required = role_required([
-    'admin',
-    'accountant'
-])
+# STAFF + ADMIN + ACCOUNTANT
+def staff_required(view_func):
+    return role_required(
+        ['admin', 'accountant', 'staff']
+    )(view_func)

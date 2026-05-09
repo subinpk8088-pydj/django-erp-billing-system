@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin-dashboard/', admin_dashboard, name='admin_dashboard'),
     path('staff-dashboard/', staff_dashboard, name='staff_dashboard'),
     path('accountant-dashboard/', accountant_dashboard, name='accountant_dashboard'),
-
+    path(
+    'register-user/',register_user,name='register_user'),
     path('logout/', logout_view, name='logout'),
 ]

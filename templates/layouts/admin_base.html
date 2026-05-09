@@ -24,141 +24,253 @@
         <hr class="border-secondary">
 
         <!-- NAVIGATION -->
-     <ul class="nav flex-column">
+    <ul class="nav flex-column">
 
     <!-- DASHBOARD -->
     <li class="nav-item mb-2">
+
         <a href="{% url 'admin_dashboard' %}"
            class="nav-link text-white">
+
             📊 Dashboard
+
         </a>
+
     </li>
 
-    <!-- CUSTOMERS -->
+    <!-- SALES -->
+    <li class="mt-3 mb-2 text-secondary small fw-bold">
+        SALES
+    </li>
+
     <li class="nav-item mb-2">
+
         <a href="{% url 'customer_list' %}"
            class="nav-link text-white">
+
             👥 Customers
-        </a>
-    </li>
 
-    <!-- PRODUCTS -->
-    <li class="nav-item mb-2">
-        <a href="{% url 'product_list' %}"
-           class="nav-link text-white">
-            📦 Products
         </a>
-    </li>
 
-    <!-- PRODUCT CATEGORIES -->
-    <li class="nav-item mb-2">
-        <a href="{% url 'category_list' %}"
-           class="nav-link text-white">
-            🗂 Product Categories
-        </a>
     </li>
 
     <li class="nav-item mb-2">
-        <a href="{% url 'add_category' %}"
-           class="nav-link text-white">
-            ➕ Add Product Category
-        </a>
-    </li>
 
-    <!-- SUPPLIERS -->
-    <li class="nav-item mb-2">
-        <a href="{% url 'supplier_list' %}"
-           class="nav-link text-white">
-            🚚 Suppliers
-        </a>
-    </li>
-
-    <!-- PURCHASES -->
-    <li class="nav-item mb-2">
-        <a href="{% url 'purchase_list' %}"
-           class="nav-link text-white">
-            🛒 Purchases
-        </a>
-    </li>
-
-    <!-- INVOICES -->
-    <li class="nav-item mb-2">
         <a href="{% url 'invoice_list' %}"
            class="nav-link text-white">
+
             🧾 Invoices
+
         </a>
+
     </li>
 
-    <!-- PAYMENTS -->
+    {% if request.user.role == 'admin' or request.user.role == 'accountant' %}
+
     <li class="nav-item mb-2">
+
         <a href="{% url 'payment_list' %}"
            class="nav-link text-white">
+
             💳 Payments
+
         </a>
+
     </li>
 
-    <!-- EXPENSES -->
-    <li class="nav-item mb-2">
-        <a href="{% url 'expense_list' %}"
-           class="nav-link text-white">
-            💸 Expenses
-        </a>
-    </li>
+    {% endif %}
 
-    <!-- EXPENSE CATEGORIES -->
-    <li class="nav-item mb-2">
-        <a href="{% url 'expense_category_list' %}"
-           class="nav-link text-white">
-            📁 Expense Categories
-        </a>
-    </li>
-
-    <li class="nav-item mb-2">
-        <a href="{% url 'create_expense_category' %}"
-           class="nav-link text-white">
-            ➕ Add Expense Category
-        </a>
-    </li>
 
     <!-- INVENTORY -->
-    <li class="nav-item mb-2">
-        <a href="{% url 'stock_movement_list' %}"
-           class="nav-link text-white">
-            📈 Inventory Ledger
-        </a>
+    <li class="mt-3 mb-2 text-secondary small fw-bold">
+        INVENTORY
     </li>
 
-    <!-- LOW STOCK -->
     <li class="nav-item mb-2">
+
+        <a href="{% url 'product_list' %}"
+           class="nav-link text-white">
+
+            📦 Products
+
+        </a>
+
+    </li>
+
+    {% if request.user.role == 'admin' %}
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'category_list' %}"
+           class="nav-link text-white">
+
+            🗂 Product Categories
+
+        </a>
+
+    </li>
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'add_category' %}"
+           class="nav-link text-white">
+
+            ➕ Add Product Category
+
+        </a>
+
+    </li>
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'supplier_list' %}"
+           class="nav-link text-white">
+
+            🚚 Suppliers
+
+        </a>
+
+    </li>
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'purchase_list' %}"
+           class="nav-link text-white">
+
+            🛒 Purchases
+
+        </a>
+
+    </li>
+
+    {% endif %}
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'stock_movement_list' %}"
+           class="nav-link text-white">
+
+            📈 Inventory Ledger
+
+        </a>
+
+    </li>
+
+    <li class="nav-item mb-2">
+
         <a href="{% url 'product_list' %}"
            class="nav-link text-warning">
+
             ⚠ Low Stock Alerts
+
         </a>
+
     </li>
+
+
+    <!-- FINANCE -->
+    {% if request.user.role == 'admin' or request.user.role == 'accountant' %}
+
+    <li class="mt-3 mb-2 text-secondary small fw-bold">
+        FINANCE
+    </li>
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'expense_list' %}"
+           class="nav-link text-white">
+
+            💸 Expenses
+
+        </a>
+
+    </li>
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'expense_category_list' %}"
+           class="nav-link text-white">
+
+            📁 Expense Categories
+
+        </a>
+
+    </li>
+
+    {% if request.user.role == 'admin' %}
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'create_expense_category' %}"
+           class="nav-link text-white">
+
+            ➕ Add Expense Category
+
+        </a>
+
+    </li>
+
+    {% endif %}
+
+    {% endif %}
+
+
+    <!-- ADMINISTRATION -->
+    {% if request.user.role == 'admin' %}
+
+    <li class="mt-3 mb-2 text-secondary small fw-bold">
+        ADMINISTRATION
+    </li>
+
+    <li class="nav-item mb-2">
+
+        <a href="{% url 'register_user' %}"
+           class="nav-link text-white">
+
+            👤 Create User
+
+        </a>
+
+    </li>
+
+    {% endif %}
+
 
     <hr class="border-secondary">
 
     <!-- USER -->
     <li class="nav-item mb-3">
+
         <small class="text-secondary">
+
             Logged in as
+
         </small>
 
         <div class="fw-bold mt-1">
+
             {{ request.user.username }}
+
         </div>
 
         <span class="badge bg-success mt-2">
+
             {{ request.user.role|title }}
+
         </span>
+
     </li>
 
     <!-- LOGOUT -->
     <li class="nav-item">
+
         <a href="{% url 'logout' %}"
            class="nav-link text-danger">
+
             🚪 Logout
+
         </a>
+
     </li>
 
 </ul>
