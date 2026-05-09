@@ -1,239 +1,741 @@
-{% extends 'base.html' %}
+{% extends 'layouts/admin_base.html' %}
 {% load static %}
 
-{% block content %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+{% block admin_content %}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .page { min-height: 100vh; background: #f4f5f7; display: flex; align-items: center; justify-content: center; padding: 2rem; font-family: 'Segoe UI', system-ui, sans-serif; }
+    * {
+        box-sizing: border-box;
+    }
 
-  .card { background: #fff; border: 1px solid #e8e8e8; border-radius: 16px; padding: 2rem; width: 100%; max-width: 480px; }
+    .register-wrapper {
 
-  .back { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #888; text-decoration: none; margin-bottom: 1.25rem; }
-  .back:hover { color: #222; }
+        max-width: 950px;
+        margin: auto;
 
-  .head { display: flex; align-items: center; gap: 12px; margin-bottom: 1.75rem; padding-bottom: 1.25rem; border-bottom: 1px solid #f0f0f0; }
-  .head-icon { width: 42px; height: 42px; background: #eff6ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-  .head-icon i { font-size: 20px; color: #2563eb; }
-  .head h1 { font-size: 17px; font-weight: 600; color: #111; }
-  .head p  { font-size: 13px; color: #888; margin-top: 2px; }
+    }
 
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .register-card {
 
-  .f { margin-bottom: 1rem; }
-  .f label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .04em; }
+        background: white;
 
-  .iw { position: relative; display: flex; align-items: center; }
-  .iw i.ic { position: absolute; left: 10px; font-size: 16px; color: #bbb; pointer-events: none; }
-  .iw input { width: 100%; padding: 9px 34px; font-size: 14px; font-family: inherit; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; color: #111; outline: none; transition: border-color .15s, box-shadow .15s; }
-  .iw input::placeholder { color: #ccc; }
-  .iw input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.1); background: #fff; }
-  .iw input.ok { border-color: #16a34a; }
-  .iw input.er { border-color: #dc2626; }
+        border-radius: 20px;
 
-  .si { position: absolute; right: 10px; font-size: 15px; opacity: 0; transition: opacity .15s; pointer-events: none; }
-  .iw input.ok ~ .sv { opacity: 1; color: #16a34a; }
-  .iw input.er ~ .xv { opacity: 1; color: #dc2626; }
+        overflow: hidden;
 
-  .hint { font-size: 12px; color: #dc2626; margin-top: 3px; min-height: 16px; }
+        border: 1px solid #e5e7eb;
 
-  .tpw { position: absolute; right: 10px; background: none; border: none; cursor: pointer; color: #bbb; font-size: 16px; padding: 0; }
-  .tpw:hover { color: #555; }
+        box-shadow:
+            0 10px 30px rgba(0,0,0,0.08);
 
-  .pills { display: flex; gap: 8px; }
-  .pill { flex: 1; padding: 9px; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; cursor: pointer; font-size: 13px; font-weight: 500; color: #666; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .15s; font-family: inherit; }
-  .pill i { font-size: 16px; }
-  .pill.on, .pill:hover { background: #eff6ff; border-color: #2563eb; color: #2563eb; }
+    }
 
-  .sbar { display: flex; gap: 3px; margin-top: 5px; }
-  .sbar span { flex: 1; height: 3px; border-radius: 2px; background: #eee; transition: background .25s; }
-  .slbl { font-size: 11px; color: #aaa; margin-top: 3px; }
+    .register-header {
 
-  hr { border: none; border-top: 1px solid #f0f0f0; margin: 1.25rem 0; }
+        background:
+            linear-gradient(
+                135deg,
+                #111827,
+                #1f2937
+            );
 
-  .btn { width: 100%; padding: 10px; font-size: 14px; font-weight: 600; font-family: inherit; background: #2563eb; color: #fff; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: opacity .15s; }
-  .btn i { font-size: 16px; }
-  .btn:hover { opacity: .88; }
-  .btn:disabled { opacity: .4; cursor: not-allowed; }
+        color: white;
 
-  .errorlist { list-style: none; padding: 0; margin: 0; }
-  .errorlist li { font-size: 12px; color: #dc2626; margin-top: 3px; }
+        padding: 35px;
 
-  @media (max-width: 480px) { .row { grid-template-columns: 1fr; } .card { padding: 1.25rem; } }
-  @keyframes spin { to { transform: rotate(360deg); } }
+    }
+
+    .register-header h1 {
+
+        margin: 0;
+        font-size: 32px;
+        font-weight: 700;
+
+    }
+
+    .register-header p {
+
+        margin-top: 8px;
+        color: #d1d5db;
+
+    }
+
+    .register-body {
+
+        padding: 35px;
+
+    }
+
+    .section-title {
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        color: #6b7280;
+
+        text-transform: uppercase;
+
+        letter-spacing: 1px;
+
+        margin-bottom: 20px;
+
+    }
+
+    .grid-2 {
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 20px;
+
+    }
+
+    .form-group {
+
+        margin-bottom: 22px;
+
+    }
+
+    .form-group label {
+
+        display: block;
+
+        margin-bottom: 8px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        color: #374151;
+
+    }
+
+    .input-wrap {
+
+        position: relative;
+
+    }
+
+    .input-wrap i {
+
+        position: absolute;
+
+        left: 15px;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        color: #9ca3af;
+
+        font-size: 18px;
+
+    }
+
+    .form-control {
+
+        width: 100%;
+
+        height: 52px;
+
+        border-radius: 14px;
+
+        border: 1px solid #d1d5db;
+
+        padding-left: 48px;
+
+        padding-right: 45px;
+
+        font-size: 14px;
+
+        transition: .2s;
+
+        background: #fafafa;
+
+    }
+
+    .form-control:focus {
+
+        outline: none;
+
+        background: white;
+
+        border-color: #2563eb;
+
+        box-shadow:
+            0 0 0 4px rgba(37,99,235,.1);
+
+    }
+
+    .toggle-password {
+
+        position: absolute;
+
+        right: 15px;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        border: none;
+
+        background: none;
+
+        cursor: pointer;
+
+        color: #6b7280;
+
+        font-size: 18px;
+
+    }
+
+    .role-grid {
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 20px;
+
+    }
+
+    .role-card {
+
+        border: 2px solid #e5e7eb;
+
+        border-radius: 16px;
+
+        padding: 25px;
+
+        text-align: center;
+
+        cursor: pointer;
+
+        transition: .2s;
+
+        background: #fafafa;
+
+    }
+
+    .role-card:hover {
+
+        border-color: #2563eb;
+
+        background: #eff6ff;
+
+    }
+
+    .role-card.active {
+
+        border-color: #2563eb;
+
+        background: #dbeafe;
+
+    }
+
+    .role-card i {
+
+        font-size: 34px;
+
+        color: #2563eb;
+
+        margin-bottom: 12px;
+
+    }
+
+    .role-card h5 {
+
+        margin: 0;
+
+        font-weight: 700;
+
+    }
+
+    .role-card p {
+
+        margin-top: 6px;
+
+        font-size: 13px;
+
+        color: #6b7280;
+
+    }
+
+    .password-box {
+
+        background: #f9fafb;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 14px;
+
+        padding: 15px;
+
+        margin-top: 12px;
+
+    }
+
+    .password-strength {
+
+        height: 6px;
+
+        background: #e5e7eb;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+        margin-top: 10px;
+
+    }
+
+    .password-strength div {
+
+        height: 100%;
+
+        width: 0;
+
+        transition: .3s;
+
+        background: #2563eb;
+
+    }
+
+    .hint {
+
+        font-size: 12px;
+
+        color: #dc2626;
+
+        margin-top: 5px;
+
+    }
+
+    .submit-btn {
+
+        width: 100%;
+
+        height: 54px;
+
+        border: none;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #1d4ed8
+            );
+
+        color: white;
+
+        font-size: 15px;
+
+        font-weight: 700;
+
+        transition: .2s;
+
+    }
+
+    .submit-btn:hover {
+
+        transform: translateY(-1px);
+
+        opacity: .95;
+
+    }
+
+    .back-btn {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        margin-bottom: 20px;
+
+        text-decoration: none;
+
+        color: #6b7280;
+
+        font-weight: 600;
+
+    }
+
+    .back-btn:hover {
+
+        color: #111827;
+
+    }
+
+    @media(max-width:768px){
+
+        .grid-2,
+        .role-grid {
+
+            grid-template-columns: 1fr;
+
+        }
+
+    }
+
 </style>
 
-<div class="page">
-  <div class="card">
+<div class="register-wrapper">
 
-    <a href="{% url 'admin_dashboard' %}" class="back">
-      <i class="ti ti-arrow-left"></i> Admin dashboard
+    <a href="{% url 'admin_dashboard' %}"
+       class="back-btn">
+
+        <i class="ti ti-arrow-left"></i>
+
+        Back to Dashboard
+
     </a>
 
-    <div class="head">
-      <div class="head-icon"><i class="ti ti-user-plus"></i></div>
-      <div>
-        <h1>Create user</h1>
-        <p>Staff and accountant roles only</p>
-      </div>
+    <div class="register-card">
+
+        <!-- HEADER -->
+        <div class="register-header">
+
+            <h1>
+                Create ERP User
+            </h1>
+
+            <p>
+                Add staff and accountant accounts securely
+            </p>
+
+        </div>
+
+        <!-- BODY -->
+        <div class="register-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <!-- PERSONAL -->
+                <div class="section-title">
+
+                    Personal Information
+
+                </div>
+
+                <div class="grid-2">
+
+                    <div class="form-group">
+
+                        <label>
+                            First Name
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <i class="ti ti-user"></i>
+
+                            <input type="text"
+                                   name="first_name"
+                                   class="form-control"
+                                   placeholder="John"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+                            Last Name
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <i class="ti ti-user"></i>
+
+                            <input type="text"
+                                   name="last_name"
+                                   class="form-control"
+                                   placeholder="Doe"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ACCOUNT -->
+                <div class="section-title mt-3">
+
+                    Account Information
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Username
+                    </label>
+
+                    <div class="input-wrap">
+
+                        <i class="ti ti-at"></i>
+
+                        <input type="text"
+                               name="username"
+                               class="form-control"
+                               placeholder="john_doe"
+                               required>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Email Address
+                    </label>
+
+                    <div class="input-wrap">
+
+                        <i class="ti ti-mail"></i>
+
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="john@example.com"
+                               required>
+
+                    </div>
+
+                </div>
+
+                <!-- ROLE -->
+                <div class="section-title mt-3">
+
+                    Select Role
+
+                </div>
+
+                <div class="role-grid">
+
+                    <div class="role-card active"
+                         data-role="staff">
+
+                        <i class="ti ti-briefcase"></i>
+
+                        <h5>
+                            Staff
+                        </h5>
+
+                        <p>
+                            Inventory & sales operations
+                        </p>
+
+                    </div>
+
+                    <div class="role-card"
+                         data-role="accountant">
+
+                        <i class="ti ti-calculator"></i>
+
+                        <h5>
+                            Accountant
+                        </h5>
+
+                        <p>
+                            Payments & expense management
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <input type="hidden"
+                       name="role"
+                       id="role"
+                       value="staff">
+
+                <!-- PASSWORD -->
+                <div class="section-title mt-4">
+
+                    Security
+
+                </div>
+
+                <div class="grid-2">
+
+                    <div class="form-group">
+
+                        <label>
+                            Password
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <i class="ti ti-lock"></i>
+
+                            <input type="password"
+                                   name="password1"
+                                   id="password1"
+                                   class="form-control"
+                                   placeholder="Create password"
+                                   required>
+
+                            <button type="button"
+                                    class="toggle-password"
+                                    onclick="togglePassword('password1', this)">
+
+                                <i class="ti ti-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                        <div class="password-box">
+
+                            <small>
+                                Password strength
+                            </small>
+
+                            <div class="password-strength">
+
+                                <div id="strengthBar"></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+                            Confirm Password
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <i class="ti ti-lock-check"></i>
+
+                            <input type="password"
+                                   name="password2"
+                                   id="password2"
+                                   class="form-control"
+                                   placeholder="Confirm password"
+                                   required>
+
+                            <button type="button"
+                                    class="toggle-password"
+                                    onclick="togglePassword('password2', this)">
+
+                                <i class="ti ti-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- SUBMIT -->
+                <button type="submit"
+                        class="submit-btn">
+
+                    <i class="ti ti-user-plus"></i>
+
+                    Create User Account
+
+                </button>
+
+            </form>
+
+        </div>
+
     </div>
 
-    <form method="POST" id="regForm" novalidate>
-      {% csrf_token %}
-
-      <div class="row">
-        <div class="f">
-          <label for="id_first_name">First name</label>
-          <div class="iw">
-            <i class="ti ti-user ic"></i>
-            <input type="text" name="first_name" id="id_first_name" value="{{ form.first_name.value|default:'' }}" placeholder="Jane" autocomplete="given-name">
-            <i class="ti ti-check si sv"></i>
-            <i class="ti ti-x si xv"></i>
-          </div>
-          <div class="hint" id="fnh">{% for e in form.first_name.errors %}{{ e }}{% endfor %}</div>
-        </div>
-        <div class="f">
-          <label for="id_last_name">Last name</label>
-          <div class="iw">
-            <i class="ti ti-user ic"></i>
-            <input type="text" name="last_name" id="id_last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Smith" autocomplete="family-name">
-            <i class="ti ti-check si sv"></i>
-            <i class="ti ti-x si xv"></i>
-          </div>
-          <div class="hint" id="lnh">{% for e in form.last_name.errors %}{{ e }}{% endfor %}</div>
-        </div>
-      </div>
-
-      <div class="f">
-        <label for="id_username">Username</label>
-        <div class="iw">
-          <i class="ti ti-at ic"></i>
-          <input type="text" name="username" id="id_username" value="{{ form.username.value|default:'' }}" placeholder="jane_smith" autocomplete="username">
-          <i class="ti ti-check si sv"></i>
-          <i class="ti ti-x si xv"></i>
-        </div>
-        <div class="hint" id="unh">{% for e in form.username.errors %}{{ e }}{% endfor %}</div>
-      </div>
-
-      <div class="f">
-        <label for="id_email">Email</label>
-        <div class="iw">
-          <i class="ti ti-mail ic"></i>
-          <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" placeholder="jane@company.com" autocomplete="email">
-          <i class="ti ti-check si sv"></i>
-          <i class="ti ti-x si xv"></i>
-        </div>
-        <div class="hint" id="emh">{% for e in form.email.errors %}{{ e }}{% endfor %}</div>
-      </div>
-
-      <div class="f">
-        <label>Role</label>
-        <div class="pills">
-          <button type="button" class="pill on" data-r="staff"><i class="ti ti-briefcase"></i> Staff</button>
-          <button type="button" class="pill" data-r="accountant"><i class="ti ti-calculator"></i> Accountant</button>
-        </div>
-        <input type="hidden" name="role" id="role" value="{{ form.role.value|default:'staff' }}">
-      </div>
-
-      <hr>
-
-      <div class="f">
-        <label for="id_password1">Password</label>
-        <div class="iw">
-          <i class="ti ti-lock ic"></i>
-          <input type="password" name="password1" id="id_password1" placeholder="Min. 8 characters" autocomplete="new-password" style="padding-right:34px">
-          <button class="tpw" type="button" onclick="tp('id_password1',this)" aria-label="Toggle password"><i class="ti ti-eye"></i></button>
-        </div>
-        <div class="sbar"><span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span></div>
-        <div class="slbl" id="slbl"></div>
-        <div class="hint" id="p1h">{% for e in form.password1.errors %}{{ e }}{% endfor %}</div>
-      </div>
-
-      <div class="f">
-        <label for="id_password2">Confirm password</label>
-        <div class="iw">
-          <i class="ti ti-lock-check ic"></i>
-          <input type="password" name="password2" id="id_password2" placeholder="Repeat password" autocomplete="new-password" style="padding-right:68px">
-          <button class="tpw" type="button" onclick="tp('id_password2',this)" aria-label="Toggle confirm" style="right:34px"><i class="ti ti-eye"></i></button>
-          <i class="ti ti-check si sv" style="right:10px"></i>
-          <i class="ti ti-x si xv" style="right:10px"></i>
-        </div>
-        <div class="hint" id="p2h">{% for e in form.password2.errors %}{{ e }}{% endfor %}</div>
-      </div>
-
-      <button class="btn" type="submit" id="sub" disabled>
-        <i class="ti ti-user-plus"></i> Create user
-      </button>
-
-    </form>
-  </div>
 </div>
 
 <script>
-(function(){
-  const ok={fn:false,ln:false,un:false,em:false,p1:false,p2:false};
-  const hint={fn:'fnh',ln:'lnh',un:'unh',em:'emh',p1:'p1h',p2:'p2h'};
 
-  function set(k,state,msg){
-    const id={'fn':'id_first_name','ln':'id_last_name','un':'id_username','em':'id_email','p1':'id_password1','p2':'id_password2'}[k];
-    const el=document.getElementById(id);
-    el.classList.remove('ok','er');
-    if(state==='ok')el.classList.add('ok');
-    if(state==='er')el.classList.add('er');
-    document.getElementById(hint[k]).textContent=msg||'';
-    ok[k]=state==='ok';
-    document.getElementById('sub').disabled=!Object.values(ok).every(Boolean);
-  }
+    // ROLE SELECTION
+    const roleCards = document.querySelectorAll('.role-card');
 
-  function vname(k,id){const v=document.getElementById(id).value.trim();if(!v)return set(k,'er','Required');if(v.length<2)return set(k,'er','Too short');set(k,'ok');}
-  function vun(){const v=document.getElementById('id_username').value.trim();if(!v)return set('un','er','Required');if(!/^[a-zA-Z0-9_]{3,30}$/.test(v))return set('un','er','3–30 chars, letters/numbers/underscore');set('un','ok');}
-  function vem(){const v=document.getElementById('id_email').value.trim();if(!v)return set('em','er','Required');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))return set('em','er','Invalid email');set('em','ok');}
+    roleCards.forEach(card => {
 
-  const SC=['','#dc2626','#ea580c','#16a34a','#16a34a'],SL=['','Weak','Fair','Good','Strong'];
-  function str(pw){let s=0;if(pw.length>=8)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;return s;}
+        card.addEventListener('click', () => {
 
-  function vp1(){
-    const v=document.getElementById('id_password1').value,s=v?str(v):0;
-    [1,2,3,4].forEach((n,i)=>document.getElementById('s'+n).style.background=i<s?SC[s]:'#eee');
-    document.getElementById('slbl').textContent=v?SL[s]:'';
-    if(!v)return set('p1','er','Required');
-    if(v.length<8)return set('p1','er','At least 8 characters');
-    if(s<2)return set('p1','er','Add uppercase, numbers or symbols');
-    set('p1','ok');
-    if(document.getElementById('id_password2').value)vp2();
-  }
+            roleCards.forEach(c => c.classList.remove('active'));
 
-  function vp2(){const a=document.getElementById('id_password1').value,b=document.getElementById('id_password2').value;if(!b)return set('p2','er','Required');if(a!==b)return set('p2','er','Passwords do not match');set('p2','ok');}
+            card.classList.add('active');
 
-  window.tp=function(id,btn){const el=document.getElementById(id),i=btn.querySelector('i');el.type=el.type==='password'?'text':'password';i.className=el.type==='text'?'ti ti-eye-off':'ti ti-eye';};
+            document.getElementById('role').value =
+                card.dataset.role;
 
-  function wire(el,fn){el.addEventListener('blur',fn);el.addEventListener('input',()=>{if(el.classList.contains('er'))fn();});}
-  wire(document.getElementById('id_first_name'),()=>vname('fn','id_first_name'));
-  wire(document.getElementById('id_last_name'),()=>vname('ln','id_last_name'));
-  wire(document.getElementById('id_username'),vun);
-  wire(document.getElementById('id_email'),vem);
-  document.getElementById('id_password1').addEventListener('input',vp1);
-  document.getElementById('id_password2').addEventListener('input',vp2);
-  document.getElementById('id_password2').addEventListener('blur',vp2);
+        });
 
-  document.querySelectorAll('.pill').forEach(p=>p.addEventListener('click',()=>{
-    document.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));
-    p.classList.add('on');document.getElementById('role').value=p.dataset.r;
-  }));
+    });
 
-  const saved=document.getElementById('role').value;
-  document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('on',p.dataset.r===saved));
+    // PASSWORD TOGGLE
+    function togglePassword(id, btn) {
 
-  document.getElementById('regForm').addEventListener('submit',function(e){
-    vname('fn','id_first_name');vname('ln','id_last_name');vun();vem();vp1();vp2();
-    if(!Object.values(ok).every(Boolean)){e.preventDefault();return;}
-    const b=document.getElementById('sub');
-    b.disabled=true;
-    b.innerHTML='<i class="ti ti-loader-2" style="animation:spin .7s linear infinite"></i> Creating...';
-  });
-})();
+        const input = document.getElementById(id);
+
+        const icon = btn.querySelector('i');
+
+        if (input.type === 'password') {
+
+            input.type = 'text';
+
+            icon.classList.remove('ti-eye');
+
+            icon.classList.add('ti-eye-off');
+
+        } else {
+
+            input.type = 'password';
+
+            icon.classList.remove('ti-eye-off');
+
+            icon.classList.add('ti-eye');
+
+        }
+
+    }
+
+    // PASSWORD STRENGTH
+    const password = document.getElementById('password1');
+
+    const strengthBar = document.getElementById('strengthBar');
+
+    password.addEventListener('input', function(){
+
+        const val = this.value;
+
+        let strength = 0;
+
+        if(val.length >= 8) strength++;
+        if(/[A-Z]/.test(val)) strength++;
+        if(/[0-9]/.test(val)) strength++;
+        if(/[^A-Za-z0-9]/.test(val)) strength++;
+
+        const widths = ['0%','25%','50%','75%','100%'];
+
+        strengthBar.style.width = widths[strength];
+
+    });
+
 </script>
 
 {% endblock %}
