@@ -1,171 +1,310 @@
 {% extends 'layouts/staff_base.html' %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Dashboard</li>
+{% endblock %}
+
 {% block staff_content %}
 
-<div class="container-fluid">
+<!-- PAGE HEADER -->
+<div class="section-header mb-4">
+    <div>
+        <h5>Staff Dashboard</h5>
+        <div class="subtitle">Welcome back, <strong>{{ request.user.username }}</strong> — Your workspace at a glance</div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="staff-role-chip">
+            <i class="bi bi-person-badge-fill me-1"></i>Staff Panel
+        </span>
+    </div>
+</div>
 
-    <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<!-- QUICK ACTION CARDS -->
+<div class="row g-3 mb-4">
 
-        <div>
-            <h2 class="fw-bold">
-                Staff Dashboard
-            </h2>
-
-            <p class="text-muted mb-0">
-                Welcome, {{ request.user.username }}
-            </p>
+    <!-- CUSTOMERS -->
+    <div class="col-md-4">
+        <div class="staff-action-card customers-card">
+            <div class="staff-action-top">
+                <div class="staff-action-icon customers-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="staff-card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+            </div>
+            <div class="staff-action-title">Customers</div>
+            <div class="staff-action-desc">Manage and view all customer records and contact information</div>
+            <a href="{% url 'customer_list' %}" class="btn btn-sm staff-btn-dark mt-auto">
+                <i class="bi bi-arrow-right-circle-fill me-1"></i>View Customers
+            </a>
         </div>
+    </div>
 
-        <div class="d-flex align-items-center gap-3">
+    <!-- PRODUCTS -->
+    <div class="col-md-4">
+        <div class="staff-action-card products-card">
+            <div class="staff-action-top">
+                <div class="staff-action-icon products-icon">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+                <div class="staff-card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+            </div>
+            <div class="staff-action-title">Products</div>
+            <div class="staff-action-desc">Browse and monitor the full product inventory catalogue</div>
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-sm mt-auto">
+                <i class="bi bi-arrow-right-circle-fill me-1"></i>View Products
+            </a>
+        </div>
+    </div>
 
-    <span class="badge bg-primary p-2">
-        Staff Panel
-    </span>
-
-    <a href="{% url 'logout' %}"
-       class="btn btn-danger btn-sm">
-
-        🚪 Logout
-
-    </a>
+    <!-- INVOICES -->
+    <div class="col-md-4">
+        <div class="staff-action-card invoices-staff-card">
+            <div class="staff-action-top">
+                <div class="staff-action-icon invoices-staff-icon">
+                    <i class="bi bi-receipt-cutoff"></i>
+                </div>
+                <div class="staff-card-arrow"><i class="bi bi-arrow-up-right"></i></div>
+            </div>
+            <div class="staff-action-title">Invoices</div>
+            <div class="staff-action-desc">Create new invoices and manage existing billing records</div>
+            <a href="{% url 'invoice_list' %}" class="btn btn-success btn-sm mt-auto">
+                <i class="bi bi-arrow-right-circle-fill me-1"></i>View Invoices
+            </a>
+        </div>
+    </div>
 
 </div>
 
+<!-- BOTTOM ROW -->
+<div class="row g-3">
+
+    <!-- PERMISSIONS -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock-fill" style="color:var(--staff-green);"></i>
+                <span>Staff Permissions</span>
+            </div>
+            <div class="card-body p-0">
+                <ul class="perm-list">
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Customer Management</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Product Viewing</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Invoice Creation</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Inventory Ledger View</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item denied">
+                        <span class="perm-icon denied"><i class="bi bi-x-lg"></i></span>
+                        <span class="perm-label">Expense Management</span>
+                        <span class="perm-tag denied">Restricted</span>
+                    </li>
+                    <li class="perm-item denied" style="border-bottom:none;">
+                        <span class="perm-icon denied"><i class="bi bi-x-lg"></i></span>
+                        <span class="perm-label">User Management</span>
+                        <span class="perm-tag denied">Restricted</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
-    <!-- QUICK ACTIONS -->
-    <div class="row g-4 mb-4">
+    <!-- QUICK LINKS + TIP -->
+    <div class="col-lg-6">
+        <div class="d-flex flex-column gap-3 h-100">
 
-        <!-- CUSTOMERS -->
-        <div class="col-md-4">
-
-            <div class="card shadow border-0 h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>👥</h1>
-
-                    <h5 class="fw-bold">
-                        Customers
-                    </h5>
-
-                    <p class="text-muted">
-                        Manage customer records
-                    </p>
-
-                    <a href="{% url 'customer_list' %}"
-                       class="btn btn-dark">
-
-                        View Customers
-
-                    </a>
-
+            <!-- Quick Links -->
+            <div class="card flex-grow-1">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-lightning-charge-fill" style="color:var(--staff-green);"></i>
+                    <span>Quick Access</span>
                 </div>
+                <div class="card-body d-flex flex-column gap-2 pt-3">
+                    <a href="{% url 'customer_list' %}" class="staff-quick-link">
+                        <span class="sql-icon dark"><i class="bi bi-people-fill"></i></span>
+                        <span>All Customers</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                    <a href="{% url 'product_list' %}" class="staff-quick-link">
+                        <span class="sql-icon primary"><i class="bi bi-box-seam-fill"></i></span>
+                        <span>Product Catalogue</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                    <a href="{% url 'invoice_list' %}" class="staff-quick-link">
+                        <span class="sql-icon success"><i class="bi bi-receipt"></i></span>
+                        <span>Invoice List</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                    <a href="{% url 'stock_movement_list' %}" class="staff-quick-link">
+                        <span class="sql-icon warning"><i class="bi bi-arrow-left-right"></i></span>
+                        <span>Inventory Ledger</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                </div>
+            </div>
 
+            <!-- Tip card -->
+            <div class="staff-tip-card">
+                <div class="staff-tip-icon">
+                    <i class="bi bi-lightbulb-fill"></i>
+                </div>
+                <div>
+                    <div class="staff-tip-title">Pro Tip</div>
+                    <div class="staff-tip-desc">
+                        Use the Inventory Ledger to track stock movements in real time and flag low-stock items before they run out.
+                    </div>
+                </div>
             </div>
 
         </div>
-
-        <!-- PRODUCTS -->
-        <div class="col-md-4">
-
-            <div class="card shadow border-0 h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>📦</h1>
-
-                    <h5 class="fw-bold">
-                        Products
-                    </h5>
-
-                    <p class="text-muted">
-                        View product inventory
-                    </p>
-
-                    <a href="{% url 'product_list' %}"
-                       class="btn btn-primary">
-
-                        View Products
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- INVOICES -->
-        <div class="col-md-4">
-
-            <div class="card shadow border-0 h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>🧾</h1>
-
-                    <h5 class="fw-bold">
-                        Invoices
-                    </h5>
-
-                    <p class="text-muted">
-                        Create and manage invoices
-                    </p>
-
-                    <a href="{% url 'invoice_list' %}"
-                       class="btn btn-success">
-
-                        View Invoices
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- EXTRA SECTION -->
-    <div class="card shadow border-0">
-
-        <div class="card-body">
-
-            <h5 class="fw-bold mb-3">
-                Staff Permissions
-            </h5>
-
-            <ul class="list-group">
-
-                <li class="list-group-item">
-                    ✅ Customer Management
-                </li>
-
-                <li class="list-group-item">
-                    ✅ Product Viewing
-                </li>
-
-                <li class="list-group-item">
-                    ✅ Invoice Creation
-                </li>
-
-                <li class="list-group-item">
-                    ❌ Expense Management
-                </li>
-
-                <li class="list-group-item">
-                    ❌ User Management
-                </li>
-
-            </ul>
-
-        </div>
-
     </div>
 
 </div>
+
+
+<style>
+    :root { --staff-green: #16A34A; }
+
+    /* Role chip */
+    .staff-role-chip {
+        display: inline-flex; align-items: center;
+        font-size: 0.75rem; font-weight: 600;
+        color: var(--staff-green);
+        background: #F0FDF4;
+        border: 1px solid rgba(22,163,74,0.2);
+        padding: 0.35rem 0.8rem; border-radius: 7px;
+    }
+
+    /* ── ACTION CARDS ── */
+    .staff-action-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+        padding: 1.4rem;
+        display: flex; flex-direction: column; gap: 0.6rem;
+        height: 100%; transition: var(--transition);
+        position: relative; overflow: hidden;
+    }
+    .staff-action-card::after {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0;
+        height: 3px; border-radius: 16px 16px 0 0;
+    }
+    .customers-card::after     { background: #111827; }
+    .products-card::after      { background: var(--primary); }
+    .invoices-staff-card::after{ background: var(--staff-green); }
+
+    .staff-action-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 32px rgba(0,0,0,0.09);
+    }
+
+    .staff-action-top {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        margin-bottom: 0.25rem;
+    }
+    .staff-card-arrow {
+        color: #D1D5DB; font-size: 0.9rem;
+        transition: var(--transition);
+    }
+    .staff-action-card:hover .staff-card-arrow { color: var(--text-secondary); }
+
+    .staff-action-icon {
+        width: 48px; height: 48px;
+        border-radius: var(--radius-md);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem;
+    }
+    .customers-icon { background: #F3F4F6; color: #374151; }
+    .products-icon  { background: var(--primary-light); color: var(--primary); }
+    .invoices-staff-icon { background: #F0FDF4; color: var(--staff-green); }
+
+    .staff-action-title {
+        font-size: 1rem; font-weight: 700; color: var(--text-primary);
+    }
+    .staff-action-desc {
+        font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; flex: 1;
+    }
+
+    /* Dark btn for customers */
+    .staff-btn-dark {
+        background: #111827; border-color: #111827; color: #fff;
+        transition: var(--transition);
+    }
+    .staff-btn-dark:hover {
+        background: #1F2937; border-color: #1F2937; color: #fff;
+        transform: translateY(-1px);
+    }
+
+    /* ── PERMISSIONS LIST ── */
+    .perm-list { list-style: none; margin: 0; padding: 0; }
+    .perm-item {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.72rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        transition: var(--transition);
+    }
+    .perm-item:hover { background: #FAFAFA; }
+    .perm-icon {
+        width: 24px; height: 24px; border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem; flex-shrink: 0;
+    }
+    .perm-icon.allowed { background: #F0FDF4; color: var(--success); }
+    .perm-icon.denied  { background: #FEF2F2; color: var(--danger); }
+    .perm-label { flex: 1; font-size: 0.855rem; color: var(--text-primary); font-weight: 500; }
+    .perm-tag {
+        font-size: 0.7rem; font-weight: 600;
+        padding: 0.18rem 0.55rem; border-radius: 5px;
+    }
+    .perm-tag.allowed { background: #F0FDF4; color: var(--success); }
+    .perm-tag.denied  { background: #FEF2F2; color: var(--danger); }
+
+    /* ── QUICK LINKS ── */
+    .staff-quick-link {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.55rem 0.65rem; border-radius: 9px;
+        color: var(--text-primary); font-size: 0.855rem; font-weight: 500;
+        text-decoration: none; transition: var(--transition);
+    }
+    .staff-quick-link:hover { background: #F0FDF4; color: var(--staff-green); }
+    .staff-quick-link .bi-chevron-right { color: #D1D5DB; font-size: 0.72rem; }
+
+    .sql-icon {
+        width: 30px; height: 30px; border-radius: 7px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; flex-shrink: 0;
+    }
+    .sql-icon.dark    { background: #F3F4F6; color: #374151; }
+    .sql-icon.primary { background: var(--primary-light); color: var(--primary); }
+    .sql-icon.success { background: #F0FDF4; color: var(--success); }
+    .sql-icon.warning { background: #FFFBEB; color: var(--warning); }
+
+    /* ── TIP CARD ── */
+    .staff-tip-card {
+        background: #F0FDF4;
+        border: 1px solid #BBF7D0;
+        border-radius: var(--radius-md);
+        padding: 1rem 1.2rem;
+        display: flex; gap: 0.85rem; align-items: flex-start;
+    }
+    .staff-tip-icon { color: var(--staff-green); font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+    .staff-tip-title { font-size: 0.85rem; font-weight: 700; color: #14532D; margin-bottom: 0.25rem; }
+    .staff-tip-desc  { font-size: 0.79rem; color: #166534; line-height: 1.55; }
+</style>
 
 {% endblock %}

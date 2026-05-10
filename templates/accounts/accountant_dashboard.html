@@ -1,186 +1,305 @@
 {% extends 'layouts/accountant_base.html' %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Dashboard</li>
+{% endblock %}
+
 {% block accountant_content %}
 
-<div class="container-fluid">
+<!-- PAGE HEADER -->
+<div class="section-header mb-4">
+    <div>
+        <h5>Accountant Dashboard</h5>
+        <div class="subtitle">Welcome back, <strong>{{ request.user.username }}</strong> — Financial overview for today</div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="topbar-finance-chip">
+            <i class="bi bi-calculator-fill me-1"></i>Accountant Panel
+        </span>
+    </div>
+</div>
 
-    <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<!-- QUICK ACTION CARDS -->
+<div class="row g-3 mb-4">
 
-        <div>
-
-            <h2 class="fw-bold">
-                Accountant Dashboard
-            </h2>
-
-            <p class="text-muted mb-0">
-                Welcome, {{ request.user.username }}
-            </p>
-
+    <!-- PAYMENTS -->
+    <div class="col-md-4">
+        <div class="acct-action-card payments-card">
+            <div class="acct-action-icon">
+                <i class="bi bi-credit-card-fill"></i>
+            </div>
+            <div class="acct-action-body">
+                <div class="acct-action-title">Payments</div>
+                <div class="acct-action-desc">Track and manage all payment records</div>
+            </div>
+            <a href="{% url 'payment_list' %}" class="btn btn-success btn-sm acct-action-btn">
+                <i class="bi bi-arrow-right-circle-fill me-1"></i>View Payments
+            </a>
         </div>
+    </div>
 
-        <div class="d-flex align-items-center gap-3">
+    <!-- EXPENSES -->
+    <div class="col-md-4">
+        <div class="acct-action-card expenses-card">
+            <div class="acct-action-icon expenses-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="acct-action-body">
+                <div class="acct-action-title">Expenses</div>
+                <div class="acct-action-desc">Monitor and manage business expenses</div>
+            </div>
+            <a href="{% url 'expense_list' %}" class="btn btn-danger btn-sm acct-action-btn">
+                <i class="bi bi-arrow-right-circle-fill me-1"></i>View Expenses
+            </a>
+        </div>
+    </div>
 
-    <span class="badge bg-success p-2">
-        Accountant Panel
-    </span>
-
-    <a href="{% url 'logout' %}"
-       class="btn btn-danger btn-sm">
-
-        🚪 Logout
-
-    </a>
+    <!-- INVOICES -->
+    <div class="col-md-4">
+        <div class="acct-action-card invoices-card">
+            <div class="acct-action-icon invoices-icon">
+                <i class="bi bi-receipt-cutoff"></i>
+            </div>
+            <div class="acct-action-body">
+                <div class="acct-action-title">Invoices</div>
+                <div class="acct-action-desc">Verify and reconcile invoice payments</div>
+            </div>
+            <a href="{% url 'invoice_list' %}" class="btn btn-primary btn-sm acct-action-btn">
+                <i class="bi bi-arrow-right-circle-fill me-1"></i>View Invoices
+            </a>
+        </div>
+    </div>
 
 </div>
 
+<!-- BOTTOM ROW: Permissions + Notice -->
+<div class="row g-3">
+
+    <!-- PERMISSIONS -->
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock-fill text-acct"></i>
+                <span>Accountant Permissions</span>
+            </div>
+            <div class="card-body p-0">
+                <ul class="perm-list">
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Payment Management</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Expense Management</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Invoice Verification</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item allowed">
+                        <span class="perm-icon allowed"><i class="bi bi-check-lg"></i></span>
+                        <span class="perm-label">Financial Monitoring</span>
+                        <span class="perm-tag allowed">Allowed</span>
+                    </li>
+                    <li class="perm-item denied">
+                        <span class="perm-icon denied"><i class="bi bi-x-lg"></i></span>
+                        <span class="perm-label">User Management</span>
+                        <span class="perm-tag denied">Restricted</span>
+                    </li>
+                    <li class="perm-item denied" style="border-bottom:none;">
+                        <span class="perm-icon denied"><i class="bi bi-x-lg"></i></span>
+                        <span class="perm-label">Product Category Management</span>
+                        <span class="perm-tag denied">Restricted</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
-    <!-- QUICK ACTIONS -->
-    <div class="row g-4 mb-4">
+    <!-- NOTICE + LINKS -->
+    <div class="col-lg-5">
+        <div class="d-flex flex-column gap-3 h-100">
 
-        <!-- PAYMENTS -->
-        <div class="col-md-4">
-
-            <div class="card shadow border-0 h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>💳</h1>
-
-                    <h5 class="fw-bold">
-                        Payments
-                    </h5>
-
-                    <p class="text-muted">
-                        Track and manage payments
-                    </p>
-
-                    <a href="{% url 'payment_list' %}"
-                       class="btn btn-success">
-
-                        View Payments
-
-                    </a>
-
+            <!-- Alert Notice -->
+            <div class="acct-notice-card">
+                <div class="acct-notice-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
                 </div>
+                <div>
+                    <div class="acct-notice-title">Attention Required</div>
+                    <div class="acct-notice-desc">
+                        Verify all transactions carefully before marking invoices as paid. Ensure payment amounts match invoice totals.
+                    </div>
+                </div>
+            </div>
 
+            <!-- Quick Links -->
+            <div class="card flex-grow-1">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-lightning-charge-fill text-acct"></i>
+                    <span>Quick Links</span>
+                </div>
+                <div class="card-body d-flex flex-column gap-2 pt-3">
+                    <a href="{% url 'payment_list' %}" class="quick-link-row">
+                        <span class="quick-link-icon success"><i class="bi bi-credit-card"></i></span>
+                        <span>All Payments</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                    <a href="{% url 'expense_list' %}" class="quick-link-row">
+                        <span class="quick-link-icon danger"><i class="bi bi-cash-stack"></i></span>
+                        <span>All Expenses</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                    <a href="{% url 'invoice_list' %}" class="quick-link-row">
+                        <span class="quick-link-icon primary"><i class="bi bi-receipt"></i></span>
+                        <span>All Invoices</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                    <a href="{% url 'expense_category_list' %}" class="quick-link-row">
+                        <span class="quick-link-icon acct"><i class="bi bi-folder"></i></span>
+                        <span>Expense Categories</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                </div>
             </div>
 
         </div>
-
-        <!-- EXPENSES -->
-        <div class="col-md-4">
-
-            <div class="card shadow border-0 h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>💸</h1>
-
-                    <h5 class="fw-bold">
-                        Expenses
-                    </h5>
-
-                    <p class="text-muted">
-                        Manage business expenses
-                    </p>
-
-                    <a href="{% url 'expense_list' %}"
-                       class="btn btn-danger">
-
-                        View Expenses
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- INVOICES -->
-        <div class="col-md-4">
-
-            <div class="card shadow border-0 h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>🧾</h1>
-
-                    <h5 class="fw-bold">
-                        Invoices
-                    </h5>
-
-                    <p class="text-muted">
-                        Verify invoice payments
-                    </p>
-
-                    <a href="{% url 'invoice_list' %}"
-                       class="btn btn-primary">
-
-                        View Invoices
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ACCOUNT SUMMARY -->
-    <div class="card shadow border-0 mb-4">
-
-        <div class="card-body">
-
-            <h5 class="fw-bold mb-3">
-                Accountant Permissions
-            </h5>
-
-            <ul class="list-group">
-
-                <li class="list-group-item">
-                    ✅ Payment Management
-                </li>
-
-                <li class="list-group-item">
-                    ✅ Expense Management
-                </li>
-
-                <li class="list-group-item">
-                    ✅ Invoice Verification
-                </li>
-
-                <li class="list-group-item">
-                    ✅ Financial Monitoring
-                </li>
-
-                <li class="list-group-item">
-                    ❌ User Management
-                </li>
-
-                <li class="list-group-item">
-                    ❌ Product Category Management
-                </li>
-
-            </ul>
-
-        </div>
-
-    </div>
-
-    <!-- FINANCIAL NOTICE -->
-    <div class="alert alert-warning shadow-sm">
-
-        <strong>Attention:</strong>
-
-        Verify all transactions carefully before marking invoices as paid.
-
     </div>
 
 </div>
+
+
+<style>
+    .text-acct { color: #7C3AED; }
+
+    /* Role chip in topbar area */
+    .topbar-finance-chip {
+        display: inline-flex; align-items: center;
+        font-size: 0.75rem; font-weight: 600;
+        color: #7C3AED;
+        background: #F5F3FF;
+        border: 1px solid rgba(124,58,237,0.2);
+        padding: 0.35rem 0.8rem; border-radius: 7px;
+    }
+
+    /* ── ACTION CARDS ── */
+    .acct-action-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+        padding: 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        height: 100%;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+    .acct-action-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        border-radius: 16px 16px 0 0;
+    }
+    .payments-card::after  { background: var(--success); }
+    .expenses-card::after  { background: var(--danger); }
+    .invoices-card::after  { background: var(--primary); }
+
+    .acct-action-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 32px rgba(0,0,0,0.09);
+    }
+
+    .acct-action-icon {
+        width: 48px; height: 48px;
+        border-radius: var(--radius-md);
+        background: #F0FDF4;
+        color: var(--success);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.35rem;
+    }
+    .expenses-icon { background: #FEF2F2; color: var(--danger); }
+    .invoices-icon { background: var(--primary-light); color: var(--primary); }
+
+    .acct-action-title {
+        font-size: 1rem; font-weight: 700; color: var(--text-primary);
+    }
+    .acct-action-desc {
+        font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;
+    }
+    .acct-action-btn { margin-top: auto; align-self: flex-start; }
+
+    /* ── PERMISSIONS LIST ── */
+    .perm-list { list-style: none; margin: 0; padding: 0; }
+    .perm-item {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        transition: var(--transition);
+    }
+    .perm-item:hover { background: #FAFAFA; }
+    .perm-icon {
+        width: 24px; height: 24px;
+        border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem; flex-shrink: 0;
+    }
+    .perm-icon.allowed { background: #F0FDF4; color: var(--success); }
+    .perm-icon.denied  { background: #FEF2F2; color: var(--danger); }
+    .perm-label { flex: 1; font-size: 0.855rem; color: var(--text-primary); font-weight: 500; }
+    .perm-tag {
+        font-size: 0.7rem; font-weight: 600;
+        padding: 0.18rem 0.55rem; border-radius: 5px;
+    }
+    .perm-tag.allowed { background: #F0FDF4; color: var(--success); }
+    .perm-tag.denied  { background: #FEF2F2; color: var(--danger); }
+
+    /* ── NOTICE CARD ── */
+    .acct-notice-card {
+        background: #FFFBEB;
+        border: 1px solid #FDE68A;
+        border-radius: var(--radius-md);
+        padding: 1rem 1.2rem;
+        display: flex; gap: 0.85rem; align-items: flex-start;
+    }
+    .acct-notice-icon {
+        color: var(--warning); font-size: 1.2rem; flex-shrink: 0; margin-top: 2px;
+    }
+    .acct-notice-title {
+        font-size: 0.85rem; font-weight: 700; color: #92400E; margin-bottom: 0.25rem;
+    }
+    .acct-notice-desc {
+        font-size: 0.79rem; color: #78350F; line-height: 1.55;
+    }
+
+    /* ── QUICK LINKS ── */
+    .quick-link-row {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.55rem 0.65rem;
+        border-radius: 9px;
+        color: var(--text-primary);
+        font-size: 0.855rem; font-weight: 500;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    .quick-link-row:hover { background: #F3F4F6; color: var(--primary); }
+    .quick-link-row .bi-chevron-right { color: #D1D5DB; font-size: 0.72rem; }
+
+    .quick-link-icon {
+        width: 30px; height: 30px; border-radius: 7px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; flex-shrink: 0;
+    }
+    .quick-link-icon.success { background: #F0FDF4; color: var(--success); }
+    .quick-link-icon.danger  { background: #FEF2F2; color: var(--danger); }
+    .quick-link-icon.primary { background: var(--primary-light); color: var(--primary); }
+    .quick-link-icon.acct    { background: #F5F3FF; color: #7C3AED; }
+</style>
 
 {% endblock %}

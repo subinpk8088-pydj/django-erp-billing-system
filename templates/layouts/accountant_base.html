@@ -1,9 +1,476 @@
-<!-- templates/layouts/accountant_base.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h3>Accountant Panel</h3>
-    {% block accountant_content %}{% endblock %}
+
+<!-- ===== SIDEBAR OVERLAY (mobile) ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ===== APP SHELL ===== -->
+<div class="erp-shell">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="erp-sidebar" id="erpSidebar">
+
+        <!-- LOGO -->
+        <div class="sidebar-logo">
+            <div class="logo-icon acct-logo-icon">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+            </div>
+            <div class="logo-text">
+                <span class="logo-name">ERP System</span>
+                <span class="logo-sub">Accountant Portal</span>
+            </div>
+        </div>
+
+        <!-- ROLE CHIP -->
+        <div class="role-chip-wrap">
+            <span class="role-chip acct-chip">
+                <i class="bi bi-calculator-fill me-1"></i>Accountant Access
+            </span>
+        </div>
+
+        <!-- NAV BODY -->
+        <nav class="sidebar-nav">
+
+            <!-- DASHBOARD -->
+            <a href="{% url 'accountant_dashboard' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'accountant_dashboard' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+
+            <!-- ── SALES ── -->
+            <div class="nav-section-label">Sales</div>
+
+            <a href="{% url 'customer_list' %}"
+               class="nav-item {% if 'customer' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-people-fill"></i></span>
+                <span class="nav-label">Customers</span>
+            </a>
+
+            <a href="{% url 'invoice_list' %}"
+               class="nav-item {% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-receipt"></i></span>
+                <span class="nav-label">Invoices</span>
+            </a>
+
+            <a href="{% url 'payment_list' %}"
+               class="nav-item {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-credit-card-fill"></i></span>
+                <span class="nav-label">Payments</span>
+            </a>
+
+            <!-- ── INVENTORY ── -->
+            <div class="nav-section-label">Inventory</div>
+
+            <a href="{% url 'product_list' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-box-seam-fill"></i></span>
+                <span class="nav-label">Products</span>
+            </a>
+
+            <a href="{% url 'stock_movement_list' %}"
+               class="nav-item {% if 'stock' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-arrow-left-right"></i></span>
+                <span class="nav-label">Inventory Ledger</span>
+            </a>
+
+            <a href="{% url 'product_list' %}" class="nav-item nav-warning">
+                <span class="nav-icon"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                <span class="nav-label">Low Stock Alerts</span>
+                <span class="nav-badge">!</span>
+            </a>
+
+            <!-- ── FINANCE ── -->
+            <div class="nav-section-label">Finance</div>
+
+            <a href="{% url 'expense_list' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-cash-stack"></i></span>
+                <span class="nav-label">Expenses</span>
+            </a>
+
+            <a href="{% url 'expense_category_list' %}"
+               class="nav-item {% if 'expense_category' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-folder-fill"></i></span>
+                <span class="nav-label">Expense Categories</span>
+            </a>
+
+        </nav>
+
+        <!-- SIDEBAR FOOTER -->
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar acct-avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ request.user.username }}</div>
+                    <div class="user-role">Accountant</div>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+
+    </aside>
+    <!-- ===== END SIDEBAR ===== -->
+
+    <!-- ===================== MAIN AREA ===================== -->
+    <div class="erp-main">
+
+        <!-- TOPBAR -->
+        <header class="erp-topbar">
+            <div class="topbar-left">
+                <button class="hamburger-btn d-lg-none" onclick="toggleSidebar()" aria-label="Toggle menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'accountant_dashboard' %}">
+                                <i class="bi bi-house-fill me-1"></i>Home
+                            </a>
+                        </li>
+                        {% block breadcrumb %}{% endblock %}
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Quick Finance Badge -->
+                <div class="finance-badge d-none d-md-flex">
+                    <i class="bi bi-shield-check-fill me-1"></i>Finance Mode
+                </div>
+
+                <button class="topbar-icon-btn" title="Notifications">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="notif-dot"></span>
+                </button>
+                <div class="topbar-divider"></div>
+                <div class="dropdown">
+                    <button class="topbar-user-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="topbar-avatar acct-topbar-avatar">
+                            {{ request.user.username|slice:":1"|upper }}
+                        </div>
+                        <div class="topbar-user-info d-none d-sm-block">
+                            <div class="topbar-username">{{ request.user.username }}</div>
+                            <div class="topbar-userrole">Accountant</div>
+                        </div>
+                        <i class="bi bi-chevron-down topbar-chevron d-none d-sm-block"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end topbar-dropdown">
+                        <li>
+                            <div class="dropdown-header-info">
+                                <strong>{{ request.user.username }}</strong>
+                                <span>{{ request.user.email }}</span>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-person-fill me-2"></i>Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-file-earmark-bar-graph-fill me-2"></i>Reports
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- ALERTS -->
+        {% if messages %}
+        <div class="px-4 pt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill"></i>
+                    {% elif message.tags == 'danger' or message.tags == 'error' %}<i class="bi bi-x-circle-fill"></i>
+                    {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill"></i>
+                    {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- PAGE CONTENT -->
+        <main class="erp-page-content page-content">
+            {% block accountant_content %}{% endblock %}
+        </main>
+
+    </div>
+
 </div>
+
+
+<!-- ===== SIDEBAR + LAYOUT STYLES ===== -->
+<style>
+    /* Accountant theme */
+    :root {
+        --acct-color: #7C3AED;
+        --acct-light: #F5F3FF;
+    }
+
+    .erp-shell {
+        display: flex;
+        min-height: 100vh;
+        background: var(--bg);
+    }
+
+    /* ── SIDEBAR ── */
+    .erp-sidebar {
+        width: var(--sidebar-w);
+        background: var(--sidebar-bg);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        z-index: 200;
+        overflow-y: auto;
+        overflow-x: hidden;
+        box-shadow: var(--shadow-sidebar);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+    .erp-sidebar::-webkit-scrollbar { width: 3px; }
+    .erp-sidebar::-webkit-scrollbar-thumb { background: #374151; }
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.4rem 1.2rem 1.1rem;
+        border-bottom: 1px solid #1F2937;
+        flex-shrink: 0;
+    }
+    .logo-icon {
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem; color: #fff;
+        flex-shrink: 0;
+    }
+    .acct-logo-icon {
+        background: var(--acct-color);
+        box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+    }
+    .logo-name { display: block; font-size: 0.95rem; font-weight: 700; color: #F9FAFB; }
+    .logo-sub { display: block; font-size: 0.7rem; color: #6B7280; font-weight: 400; margin-top: 1px; }
+
+    .role-chip-wrap { padding: 0.6rem 1rem 0; }
+    .role-chip {
+        display: inline-flex; align-items: center;
+        font-size: 0.68rem; font-weight: 600;
+        padding: 0.25rem 0.6rem; border-radius: 6px;
+        letter-spacing: 0.03em;
+    }
+    .acct-chip {
+        background: rgba(124,58,237,0.15);
+        color: #A78BFA;
+        border: 1px solid rgba(124,58,237,0.25);
+    }
+
+    .sidebar-nav {
+        flex: 1; padding: 0.9rem 0.75rem;
+        display: flex; flex-direction: column; gap: 1px;
+    }
+    .nav-section-label {
+        font-size: 0.65rem; font-weight: 700; color: #4B5563;
+        text-transform: uppercase; letter-spacing: 0.1em;
+        padding: 0.9rem 0.6rem 0.3rem; margin-top: 0.3rem;
+    }
+    .nav-item {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.6rem 0.85rem; border-radius: 9px;
+        color: #9CA3AF; font-size: 0.855rem; font-weight: 500;
+        transition: var(--transition); position: relative;
+        text-decoration: none;
+    }
+    .nav-item:hover { background: var(--sidebar-hover); color: #F3F4F6; }
+    .nav-item.active {
+        background: var(--acct-color);
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(124,58,237,0.35);
+    }
+    .nav-item.active .nav-icon { color: #fff; }
+    .nav-item.nav-warning { color: #FCD34D; }
+    .nav-item.nav-warning:hover { background: #1F2937; color: #FDE68A; }
+
+    .nav-icon {
+        font-size: 1rem; width: 20px; text-align: center;
+        flex-shrink: 0; color: #6B7280; transition: var(--transition);
+    }
+    .nav-item:hover .nav-icon { color: #D1D5DB; }
+    .nav-label { flex: 1; }
+    .nav-badge {
+        background: var(--warning); color: #fff;
+        font-size: 0.6rem; font-weight: 700;
+        width: 18px; height: 18px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    .sidebar-footer {
+        padding: 0.85rem 0.75rem;
+        border-top: 1px solid #1F2937;
+        flex-shrink: 0;
+    }
+    .user-card {
+        display: flex; align-items: center; gap: 0.65rem;
+        padding: 0.6rem 0.5rem; border-radius: 9px; margin-bottom: 0.5rem;
+    }
+    .user-avatar {
+        width: 34px; height: 34px; border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .acct-avatar { background: var(--acct-color); }
+    .user-name { font-size: 0.82rem; font-weight: 600; color: #F3F4F6; line-height: 1.2; }
+    .user-role { font-size: 0.7rem; color: #6B7280; }
+
+    .logout-btn {
+        display: flex; align-items: center; gap: 0.6rem;
+        padding: 0.55rem 0.85rem; border-radius: 9px;
+        color: #EF4444; font-size: 0.84rem; font-weight: 500;
+        transition: var(--transition); text-decoration: none; width: 100%;
+    }
+    .logout-btn:hover { background: rgba(239,68,68,0.12); color: #F87171; }
+
+    /* MAIN */
+    .erp-main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; min-width: 0; }
+    .erp-page-content { flex: 1; padding: 1.75rem; }
+
+    /* TOPBAR */
+    .erp-topbar {
+        height: var(--topbar-h);
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 1.75rem;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(0,0,0,0.04);
+        gap: 1rem;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 0.85rem; min-width: 0; }
+    .topbar-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+    .topbar-divider { width: 1px; height: 28px; background: var(--border); margin: 0 0.25rem; }
+
+    .finance-badge {
+        display: flex; align-items: center;
+        font-size: 0.72rem; font-weight: 600;
+        color: var(--acct-color);
+        background: var(--acct-light);
+        border: 1px solid rgba(124,58,237,0.2);
+        padding: 0.28rem 0.65rem;
+        border-radius: 6px;
+        letter-spacing: 0.02em;
+    }
+
+    .breadcrumb { margin-bottom: 0; }
+    .breadcrumb-item a { color: var(--text-secondary); font-size: 0.83rem; font-weight: 500; text-decoration: none; transition: var(--transition); }
+    .breadcrumb-item a:hover { color: var(--acct-color); }
+    .breadcrumb-item.active { color: var(--text-primary); font-size: 0.83rem; font-weight: 600; }
+    .breadcrumb-item + .breadcrumb-item::before { color: #D1D5DB; content: "/"; }
+
+    .topbar-icon-btn {
+        width: 36px; height: 36px;
+        border: none; background: transparent; border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--text-secondary); font-size: 1rem;
+        cursor: pointer; position: relative; transition: var(--transition);
+    }
+    .topbar-icon-btn:hover { background: #F3F4F6; color: var(--text-primary); }
+    .notif-dot {
+        position: absolute; top: 7px; right: 7px;
+        width: 7px; height: 7px;
+        background: var(--danger); border-radius: 50%;
+        border: 1.5px solid #fff;
+    }
+    .topbar-user-btn {
+        display: flex; align-items: center; gap: 0.55rem;
+        background: transparent; border: none; cursor: pointer;
+        padding: 0.3rem 0.5rem; border-radius: 10px; transition: var(--transition);
+    }
+    .topbar-user-btn:hover { background: #F3F4F6; }
+    .topbar-user-btn::after { display: none; }
+    .topbar-avatar {
+        width: 34px; height: 34px; border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .acct-topbar-avatar { background: var(--acct-color); }
+    .topbar-username { font-size: 0.83rem; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
+    .topbar-userrole { font-size: 0.7rem; color: var(--text-secondary); }
+    .topbar-chevron { font-size: 0.65rem; color: var(--text-secondary); }
+
+    .topbar-dropdown {
+        min-width: 200px; border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+        padding: 0.3rem 0; margin-top: 0.3rem !important;
+    }
+    .topbar-dropdown .dropdown-item {
+        font-size: 0.85rem; font-weight: 500; color: var(--text-primary);
+        padding: 0.5rem 1rem; transition: var(--transition);
+        display: flex; align-items: center;
+    }
+    .topbar-dropdown .dropdown-item:hover { background: #F3F4F6; color: var(--acct-color); }
+    .topbar-dropdown .dropdown-item.text-danger:hover { background: #FEF2F2; color: var(--danger); }
+    .dropdown-header-info { padding: 0.6rem 1rem; display: flex; flex-direction: column; }
+    .dropdown-header-info strong { font-size: 0.85rem; color: var(--text-primary); }
+    .dropdown-header-info span { font-size: 0.75rem; color: var(--text-secondary); }
+
+    .hamburger-btn {
+        width: 38px; height: 38px;
+        border: 1.5px solid var(--border); background: transparent;
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem; color: var(--text-primary);
+        cursor: pointer; transition: var(--transition); flex-shrink: 0;
+    }
+    .hamburger-btn:hover { background: #F3F4F6; }
+
+    .sidebar-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.45); z-index: 190;
+        backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.show { display: block; }
+
+    @media (max-width: 991.98px) {
+        .erp-sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+        .erp-sidebar.open { transform: translateX(0); }
+        .erp-main { margin-left: 0; }
+        .erp-page-content { padding: 1.25rem; }
+        .erp-topbar { padding: 0 1rem; }
+    }
+    @media (max-width: 576px) {
+        .erp-page-content { padding: 1rem; }
+        .finance-badge { display: none !important; }
+    }
+</style>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('erpSidebar').classList.toggle('open');
+        document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+    function closeSidebar() {
+        document.getElementById('erpSidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth >= 992) closeSidebar(); });
+</script>
+
 {% endblock %}

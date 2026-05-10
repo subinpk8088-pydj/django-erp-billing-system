@@ -2,349 +2,670 @@
 
 {% block content %}
 
-<div class="d-flex" style="min-height:100vh;">
+<!-- ===== SIDEBAR OVERLAY (mobile) ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-    <!-- SIDEBAR -->
-    <div class="bg-dark text-white p-3 shadow-lg"
-         style="width:270px;">
+<!-- ===== APP SHELL ===== -->
+<div class="erp-shell">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="erp-sidebar" id="erpSidebar">
 
         <!-- LOGO -->
-        <div class="text-center mb-4">
-
-            <h3 class="fw-bold">
-                ERP SYSTEM
-            </h3>
-
-            <small class="text-secondary">
-                Billing & Inventory
-            </small>
-
-        </div>
-
-        <hr class="border-secondary">
-
-        <!-- NAVIGATION -->
-    <ul class="nav flex-column">
-
-    <!-- DASHBOARD -->
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'admin_dashboard' %}"
-           class="nav-link text-white">
-
-            📊 Dashboard
-
-        </a>
-
-    </li>
-
-    <!-- SALES -->
-    <li class="mt-3 mb-2 text-secondary small fw-bold">
-        SALES
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'customer_list' %}"
-           class="nav-link text-white">
-
-            👥 Customers
-
-        </a>
-
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'invoice_list' %}"
-           class="nav-link text-white">
-
-            🧾 Invoices
-
-        </a>
-
-    </li>
-
-    {% if request.user.role == 'admin' or request.user.role == 'accountant' %}
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'payment_list' %}"
-           class="nav-link text-white">
-
-            💳 Payments
-
-        </a>
-
-    </li>
-
-    {% endif %}
-
-
-    <!-- INVENTORY -->
-    <li class="mt-3 mb-2 text-secondary small fw-bold">
-        INVENTORY
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'product_list' %}"
-           class="nav-link text-white">
-
-            📦 Products
-
-        </a>
-
-    </li>
-
-    {% if request.user.role == 'admin' %}
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'category_list' %}"
-           class="nav-link text-white">
-
-            🗂 Product Categories
-
-        </a>
-
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'add_category' %}"
-           class="nav-link text-white">
-
-            ➕ Add Product Category
-
-        </a>
-
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'supplier_list' %}"
-           class="nav-link text-white">
-
-            🚚 Suppliers
-
-        </a>
-
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'purchase_list' %}"
-           class="nav-link text-white">
-
-            🛒 Purchases
-
-        </a>
-
-    </li>
-
-    {% endif %}
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'stock_movement_list' %}"
-           class="nav-link text-white">
-
-            📈 Inventory Ledger
-
-        </a>
-
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'product_list' %}"
-           class="nav-link text-warning">
-
-            ⚠ Low Stock Alerts
-
-        </a>
-
-    </li>
-
-
-    <!-- FINANCE -->
-    {% if request.user.role == 'admin' or request.user.role == 'accountant' %}
-
-    <li class="mt-3 mb-2 text-secondary small fw-bold">
-        FINANCE
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'expense_list' %}"
-           class="nav-link text-white">
-
-            💸 Expenses
-
-        </a>
-
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'expense_category_list' %}"
-           class="nav-link text-white">
-
-            📁 Expense Categories
-
-        </a>
-
-    </li>
-
-    {% if request.user.role == 'admin' %}
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'create_expense_category' %}"
-           class="nav-link text-white">
-
-            ➕ Add Expense Category
-
-        </a>
-
-    </li>
-
-    {% endif %}
-
-    {% endif %}
-
-
-    <!-- ADMINISTRATION -->
-    {% if request.user.role == 'admin' %}
-
-    <li class="mt-3 mb-2 text-secondary small fw-bold">
-        ADMINISTRATION
-    </li>
-
-    <li class="nav-item mb-2">
-
-        <a href="{% url 'register_user' %}"
-           class="nav-link text-white">
-
-            👤 Create User
-
-        </a>
-
-    </li>
-
-    {% endif %}
-
-
-    <hr class="border-secondary">
-
-    <!-- USER -->
-    <li class="nav-item mb-3">
-
-        <small class="text-secondary">
-
-            Logged in as
-
-        </small>
-
-        <div class="fw-bold mt-1">
-
-            {{ request.user.username }}
-
-        </div>
-
-        <span class="badge bg-success mt-2">
-
-            {{ request.user.role|title }}
-
-        </span>
-
-    </li>
-
-    <!-- LOGOUT -->
-    <li class="nav-item">
-
-        <a href="{% url 'logout' %}"
-           class="nav-link text-danger">
-
-            🚪 Logout
-
-        </a>
-
-    </li>
-
-</ul>
-
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="flex-grow-1 bg-light">
-
-        <!-- TOPBAR -->
-        <div class="bg-white shadow-sm p-3 d-flex justify-content-between align-items-center">
-
-            <div>
-
-                <h4 class="mb-0 fw-bold">
-
-                    ERP Billing Management
-
-                </h4>
-
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
             </div>
-
-            <div>
-
-                <span class="fw-semibold me-3">
-
-                    {{ request.user.username }}
-
-                </span>
-
-                <span class="badge bg-primary">
-
-                    {{ request.user.role|title }}
-
-                </span>
-
+            <div class="logo-text">
+                <span class="logo-name">ERP System</span>
+                <span class="logo-sub">Billing & Inventory</span>
             </div>
-
         </div>
 
-        <!-- ALERTS -->
-        <div class="p-3">
+        <!-- NAV BODY -->
+        <nav class="sidebar-nav" id="sidebarNav">
 
-            {% if messages %}
+            <!-- DASHBOARD -->
+            <a href="{% url 'admin_dashboard' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
 
-                {% for message in messages %}
+            <!-- ── SALES ── -->
+            <div class="nav-section-label">Sales</div>
 
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            <a href="{% url 'customer_list' %}"
+               class="nav-item {% if 'customer' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-people-fill"></i></span>
+                <span class="nav-label">Customers</span>
+            </a>
 
-                        {{ message }}
+            <a href="{% url 'invoice_list' %}"
+               class="nav-item {% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-receipt"></i></span>
+                <span class="nav-label">Invoices</span>
+            </a>
 
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="alert">
-                        </button>
-
-                    </div>
-
-                {% endfor %}
-
+            {% if request.user.role == 'admin' or request.user.role == 'accountant' %}
+            <a href="{% url 'payment_list' %}"
+               class="nav-item {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-credit-card-fill"></i></span>
+                <span class="nav-label">Payments</span>
+            </a>
             {% endif %}
 
+            <!-- ── INVENTORY ── -->
+            <div class="nav-section-label">Inventory</div>
+
+            <a href="{% url 'product_list' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-box-seam-fill"></i></span>
+                <span class="nav-label">Products</span>
+            </a>
+
+            {% if request.user.role == 'admin' %}
+            <a href="{% url 'category_list' %}"
+               class="nav-item {% if 'category' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-tags-fill"></i></span>
+                <span class="nav-label">Product Categories</span>
+            </a>
+
+            <a href="{% url 'add_category' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'add_category' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-plus-circle-fill"></i></span>
+                <span class="nav-label">Add Category</span>
+            </a>
+
+            <a href="{% url 'supplier_list' %}"
+               class="nav-item {% if 'supplier' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-truck-front-fill"></i></span>
+                <span class="nav-label">Suppliers</span>
+            </a>
+
+            <a href="{% url 'purchase_list' %}"
+               class="nav-item {% if 'purchase' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-cart-fill"></i></span>
+                <span class="nav-label">Purchases</span>
+            </a>
+            {% endif %}
+
+            <a href="{% url 'stock_movement_list' %}"
+               class="nav-item {% if 'stock' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-arrow-left-right"></i></span>
+                <span class="nav-label">Inventory Ledger</span>
+            </a>
+
+            <a href="{% url 'product_list' %}" class="nav-item nav-warning">
+                <span class="nav-icon"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                <span class="nav-label">Low Stock Alerts</span>
+                <span class="nav-badge">!</span>
+            </a>
+
+            <!-- ── FINANCE ── -->
+            {% if request.user.role == 'admin' or request.user.role == 'accountant' %}
+            <div class="nav-section-label">Finance</div>
+
+            <a href="{% url 'expense_list' %}"
+               class="nav-item {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-cash-stack"></i></span>
+                <span class="nav-label">Expenses</span>
+            </a>
+
+            <a href="{% url 'expense_category_list' %}"
+               class="nav-item {% if 'expense_category' in request.resolver_match.url_name %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-folder-fill"></i></span>
+                <span class="nav-label">Expense Categories</span>
+            </a>
+
+            {% if request.user.role == 'admin' %}
+            <a href="{% url 'create_expense_category' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'create_expense_category' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-plus-circle-fill"></i></span>
+                <span class="nav-label">Add Exp. Category</span>
+            </a>
+            {% endif %}
+            {% endif %}
+
+            <!-- ── ADMINISTRATION ── -->
+            {% if request.user.role == 'admin' %}
+            <div class="nav-section-label">Administration</div>
+
+            <a href="{% url 'register_user' %}"
+               class="nav-item {% if request.resolver_match.url_name == 'register_user' %}active{% endif %}">
+                <span class="nav-icon"><i class="bi bi-person-plus-fill"></i></span>
+                <span class="nav-label">Create User</span>
+            </a>
+            {% endif %}
+
+        </nav>
+
+        <!-- SIDEBAR FOOTER -->
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ request.user.username }}</div>
+                    <div class="user-role">{{ request.user.role|title }}</div>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
         </div>
+
+    </aside>
+    <!-- ===== END SIDEBAR ===== -->
+
+
+    <!-- ===================== MAIN AREA ===================== -->
+    <div class="erp-main">
+
+        <!-- TOPBAR -->
+        <header class="erp-topbar">
+            <div class="topbar-left">
+                <!-- Hamburger (mobile) -->
+                <button class="hamburger-btn d-lg-none" onclick="toggleSidebar()" aria-label="Toggle menu">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'admin_dashboard' %}">
+                                <i class="bi bi-house-fill me-1"></i>Home
+                            </a>
+                        </li>
+                        {% block breadcrumb %}{% endblock %}
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Notification -->
+                <button class="topbar-icon-btn" title="Notifications">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="notif-dot"></span>
+                </button>
+
+                <!-- Divider -->
+                <div class="topbar-divider"></div>
+
+                <!-- User dropdown -->
+                <div class="dropdown">
+                    <button class="topbar-user-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="topbar-avatar">
+                            {{ request.user.username|slice:":1"|upper }}
+                        </div>
+                        <div class="topbar-user-info d-none d-sm-block">
+                            <div class="topbar-username">{{ request.user.username }}</div>
+                            <div class="topbar-userrole">{{ request.user.role|title }}</div>
+                        </div>
+                        <i class="bi bi-chevron-down topbar-chevron d-none d-sm-block"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end topbar-dropdown">
+                        <li>
+                            <div class="dropdown-header-info">
+                                <strong>{{ request.user.username }}</strong>
+                                <span>{{ request.user.email }}</span>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-person-fill me-2"></i>Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-gear-fill me-2"></i>Settings
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <!-- END TOPBAR -->
+
+        <!-- ALERTS -->
+        {% if messages %}
+        <div class="px-4 pt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill"></i>
+                    {% elif message.tags == 'danger' or message.tags == 'error' %}<i class="bi bi-x-circle-fill"></i>
+                    {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill"></i>
+                    {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <!-- PAGE CONTENT -->
-        <div class="p-4">
-
-            {% block admin_content %}
-            {% endblock %}
-
-        </div>
+        <main class="erp-page-content page-content">
+            {% block admin_content %}{% endblock %}
+        </main>
 
     </div>
+    <!-- END MAIN -->
 
 </div>
+<!-- END APP SHELL -->
+
+
+<!-- ===== SIDEBAR + LAYOUT STYLES ===== -->
+<style>
+    /* SHELL */
+    .erp-shell {
+        display: flex;
+        min-height: 100vh;
+        background: var(--bg);
+    }
+
+    /* ── SIDEBAR ── */
+    .erp-sidebar {
+        width: var(--sidebar-w);
+        background: var(--sidebar-bg);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        z-index: 200;
+        overflow-y: auto;
+        overflow-x: hidden;
+        box-shadow: var(--shadow-sidebar);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+    .erp-sidebar::-webkit-scrollbar { width: 3px; }
+    .erp-sidebar::-webkit-scrollbar-thumb { background: #374151; }
+
+    /* Logo */
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.4rem 1.2rem 1.1rem;
+        border-bottom: 1px solid #1F2937;
+        flex-shrink: 0;
+    }
+    .logo-icon {
+        width: 38px; height: 38px;
+        background: var(--primary);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem; color: #fff;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+    }
+    .logo-name {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #F9FAFB;
+        letter-spacing: 0.01em;
+    }
+    .logo-sub {
+        display: block;
+        font-size: 0.7rem;
+        color: #6B7280;
+        font-weight: 400;
+        margin-top: 1px;
+    }
+
+    /* Nav */
+    .sidebar-nav {
+        flex: 1;
+        padding: 0.9rem 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+    .nav-section-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #4B5563;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.9rem 0.6rem 0.3rem;
+        margin-top: 0.3rem;
+    }
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0.85rem;
+        border-radius: 9px;
+        color: #9CA3AF;
+        font-size: 0.855rem;
+        font-weight: 500;
+        transition: var(--transition);
+        position: relative;
+        text-decoration: none;
+    }
+    .nav-item:hover {
+        background: var(--sidebar-hover);
+        color: #F3F4F6;
+    }
+    .nav-item.active {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(37,99,235,0.35);
+    }
+    .nav-item.active .nav-icon { color: #fff; }
+    .nav-item.nav-warning { color: #FCD34D; }
+    .nav-item.nav-warning:hover { background: #1F2937; color: #FDE68A; }
+
+    .nav-icon {
+        font-size: 1rem;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+        color: #6B7280;
+        transition: var(--transition);
+    }
+    .nav-item:hover .nav-icon { color: #D1D5DB; }
+    .nav-label { flex: 1; }
+    .nav-badge {
+        background: var(--warning);
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 700;
+        width: 18px; height: 18px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Sidebar footer */
+    .sidebar-footer {
+        padding: 0.85rem 0.75rem;
+        border-top: 1px solid #1F2937;
+        flex-shrink: 0;
+    }
+    .user-card {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.6rem 0.5rem;
+        border-radius: 9px;
+        margin-bottom: 0.5rem;
+    }
+    .user-avatar {
+        width: 34px; height: 34px;
+        background: var(--primary);
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+    }
+    .user-name {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #F3F4F6;
+        line-height: 1.2;
+    }
+    .user-role {
+        font-size: 0.7rem;
+        color: #6B7280;
+    }
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.55rem 0.85rem;
+        border-radius: 9px;
+        color: #EF4444;
+        font-size: 0.84rem;
+        font-weight: 500;
+        transition: var(--transition);
+        text-decoration: none;
+        width: 100%;
+    }
+    .logout-btn:hover {
+        background: rgba(239,68,68,0.12);
+        color: #F87171;
+    }
+
+    /* ── MAIN ── */
+    .erp-main {
+        margin-left: var(--sidebar-w);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        min-width: 0;
+    }
+    .erp-page-content {
+        flex: 1;
+        padding: 1.75rem;
+    }
+
+    /* ── TOPBAR ── */
+    .erp-topbar {
+        height: var(--topbar-h);
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.75rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(0,0,0,0.04);
+        gap: 1rem;
+    }
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        min-width: 0;
+    }
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+    .topbar-divider {
+        width: 1px;
+        height: 28px;
+        background: var(--border);
+        margin: 0 0.25rem;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb { margin-bottom: 0; }
+    .breadcrumb-item a {
+        color: var(--text-secondary);
+        font-size: 0.83rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    .breadcrumb-item a:hover { color: var(--primary); }
+    .breadcrumb-item.active { color: var(--text-primary); font-size: 0.83rem; font-weight: 600; }
+    .breadcrumb-item + .breadcrumb-item::before { color: #D1D5DB; content: "/"; }
+
+    /* Topbar icon btn */
+    .topbar-icon-btn {
+        width: 36px; height: 36px;
+        border: none; background: transparent;
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--text-secondary);
+        font-size: 1rem;
+        cursor: pointer;
+        position: relative;
+        transition: var(--transition);
+    }
+    .topbar-icon-btn:hover { background: #F3F4F6; color: var(--text-primary); }
+    .notif-dot {
+        position: absolute;
+        top: 7px; right: 7px;
+        width: 7px; height: 7px;
+        background: var(--danger);
+        border-radius: 50%;
+        border: 1.5px solid #fff;
+    }
+
+    /* Topbar user btn */
+    .topbar-user-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.3rem 0.5rem;
+        border-radius: 10px;
+        transition: var(--transition);
+    }
+    .topbar-user-btn:hover { background: #F3F4F6; }
+    .topbar-user-btn::after { display: none; }
+    .topbar-avatar {
+        width: 34px; height: 34px;
+        background: var(--primary);
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+    }
+    .topbar-username {
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1.2;
+    }
+    .topbar-userrole {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+    }
+    .topbar-chevron {
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+    }
+
+    /* Dropdown */
+    .topbar-dropdown {
+        min-width: 200px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+        padding: 0.3rem 0;
+        margin-top: 0.3rem !important;
+    }
+    .topbar-dropdown .dropdown-item {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        padding: 0.5rem 1rem;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+    }
+    .topbar-dropdown .dropdown-item:hover {
+        background: #F3F4F6;
+        color: var(--primary);
+    }
+    .topbar-dropdown .dropdown-item.text-danger:hover {
+        background: #FEF2F2;
+        color: var(--danger);
+    }
+    .dropdown-header-info {
+        padding: 0.6rem 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .dropdown-header-info strong {
+        font-size: 0.85rem;
+        color: var(--text-primary);
+    }
+    .dropdown-header-info span {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    /* Hamburger */
+    .hamburger-btn {
+        width: 38px; height: 38px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: var(--transition);
+        flex-shrink: 0;
+    }
+    .hamburger-btn:hover { background: #F3F4F6; }
+
+    /* Overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 190;
+        backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.show { display: block; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 991.98px) {
+        .erp-sidebar {
+            transform: translateX(calc(-1 * var(--sidebar-w)));
+        }
+        .erp-sidebar.open {
+            transform: translateX(0);
+        }
+        .erp-main {
+            margin-left: 0;
+        }
+        .erp-page-content {
+            padding: 1.25rem;
+        }
+        .erp-topbar {
+            padding: 0 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .erp-page-content { padding: 1rem; }
+    }
+</style>
+
+<script>
+    function toggleSidebar() {
+        const sidebar  = document.getElementById('erpSidebar');
+        const overlay  = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    }
+    function closeSidebar() {
+        document.getElementById('erpSidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+    }
+    // Auto-close sidebar on resize to desktop
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 992) closeSidebar();
+    });
+</script>
 
 {% endblock %}

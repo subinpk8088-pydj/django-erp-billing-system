@@ -1,117 +1,345 @@
 {% extends 'layouts/admin_base.html' %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Dashboard</li>
+{% endblock %}
+
 {% block admin_content %}
 
-<h2>Admin Dashboard</h2>
-<p>Welcome, {{ request.user.username }}</p>
+<!-- PAGE HEADER -->
+<div class="section-header mb-4">
+    <div>
+        <h5>Admin Dashboard</h5>
+        <div class="subtitle">Welcome back, <strong>{{ request.user.username }}</strong> — Full system overview</div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="admin-role-chip">
+            <i class="bi bi-shield-fill me-1"></i>Administrator
+        </span>
+        <span class="topbar-date-chip d-none d-sm-inline-flex">
+            <i class="bi bi-calendar3 me-1"></i>
+            <span id="adminDate"></span>
+        </span>
+    </div>
+</div>
 
-<hr>
+<!-- KPI STAT CARDS -->
+<div class="row g-3 mb-4">
 
-<!-- KPI CARDS -->
-<div class="row">
-
-    <div class="col-md-3">
-        <div class="card p-3 bg-primary text-white">
-            <h5>Total Revenue</h5>
-            <h3>₹{{ total_revenue }}</h3>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card primary">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value">₹{{ total_revenue }}</div>
+                    <div class="stat-sub"><i class="bi bi-arrow-up-right text-success"></i> This period</div>
+                </div>
+                <div class="stat-icon primary">
+                    <i class="bi bi-currency-rupee"></i>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 bg-success text-white">
-            <h5>Total Invoices</h5>
-            <h3>{{ total_invoices }}</h3>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card success">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <div class="stat-label">Total Invoices</div>
+                    <div class="stat-value">{{ total_invoices }}</div>
+                    <div class="stat-sub"><i class="bi bi-receipt"></i> All time</div>
+                </div>
+                <div class="stat-icon success">
+                    <i class="bi bi-receipt-cutoff"></i>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 bg-dark text-white">
-            <h5>Total Products</h5>
-            <h3>{{ total_products }}</h3>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card warning">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <div class="stat-label">Total Products</div>
+                    <div class="stat-value">{{ total_products }}</div>
+                    <div class="stat-sub"><i class="bi bi-box-seam"></i> In catalogue</div>
+                </div>
+                <div class="stat-icon warning">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 bg-danger text-white">
-            <h5>Low Stock</h5>
-            <h3>{{ low_stock_count }}</h3>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card danger">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <div class="stat-label">Low Stock</div>
+                    <div class="stat-value">{{ low_stock_count }}</div>
+                    <div class="stat-sub"><i class="bi bi-exclamation-triangle"></i> Needs attention</div>
+                </div>
+                <div class="stat-icon danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
 
-<hr>
+<!-- CHART + LOW STOCK ROW -->
+<div class="row g-3 mb-3">
 
-<!-- SALES CHART -->
-<h4>Sales Overview</h4>
+    <!-- SALES CHART -->
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-bar-chart-line-fill text-primary"></i>
+                    <span>Sales Overview</span>
+                </div>
+                <span class="chart-period-badge">Last 30 Days</span>
+            </div>
+            <div class="card-body">
+                <canvas id="salesChart" height="95"></canvas>
+            </div>
+        </div>
+    </div>
 
-<canvas id="salesChart" height="100"></canvas>
+    <!-- LOW STOCK PANEL -->
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                    <span>Low Stock Alerts</span>
+                </div>
+                {% if low_stock_products %}
+                <span class="badge" style="background:#FEF2F2;color:var(--danger);font-size:0.7rem;">
+                    {{ low_stock_count }} items
+                </span>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                {% if low_stock_products %}
+                <ul class="stock-alert-list">
+                    {% for product in low_stock_products %}
+                    <li class="stock-alert-item">
+                        <div class="stock-alert-icon">
+                            <i class="bi bi-box-seam-fill"></i>
+                        </div>
+                        <div class="stock-alert-info">
+                            <div class="stock-alert-name">{{ product.name }}</div>
+                            <div class="stock-alert-qty">{{ product.stock }} units remaining</div>
+                        </div>
+                        <span class="stock-alert-badge">Low</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-check-circle-fill text-success mb-2" style="font-size:2rem;"></i>
+                    <div class="empty-state-text">All products well stocked</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
+</div>
+
+<!-- RECENT INVOICES TABLE -->
+<div class="erp-table-wrap">
+    <div class="table-toolbar">
+        <div class="d-flex align-items-center gap-2 flex-grow-1">
+            <i class="bi bi-clock-history text-primary"></i>
+            <span class="fw-600" style="font-weight:600;font-size:0.9rem;">Recent Invoices</span>
+        </div>
+        <a href="{% url 'invoice_list' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-eye me-1"></i>View All
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table erp-table mb-0">
+            <thead>
+                <tr>
+                    <th>#ID</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in recent_invoices %}
+                <tr>
+                    <td>
+                        <span class="inv-id-badge">#{{ inv.id }}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="cust-mini-avatar">{{ inv.customer.name|slice:":1"|upper }}</div>
+                            <span>{{ inv.customer.name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="fw-600" style="font-weight:600;">₹{{ inv.grand_total }}</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'invoice_detail' inv.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye me-1"></i>View
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox d-block mb-1" style="font-size:1.5rem;"></i>
+                        No invoices found
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    const ctx = document.getElementById('salesChart');
+    // Date chip
+    const d = new Date();
+    document.getElementById('adminDate').textContent =
+        d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
 
+    // Sales chart
+    const ctx = document.getElementById('salesChart').getContext('2d');
     new Chart(ctx, {
         type: 'line',
         data: {
             labels: {{ dates|safe }},
             datasets: [{
-                label: 'Revenue',
+                label: 'Revenue (₹)',
                 data: {{ totals|safe }},
-                borderWidth: 2,
-                fill: false
+                borderColor: '#2563EB',
+                backgroundColor: 'rgba(37,99,235,0.07)',
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.42,
+                pointBackgroundColor: '#2563EB',
+                pointRadius: 3,
+                pointHoverRadius: 6,
             }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#111827',
+                    titleColor: '#F9FAFB',
+                    bodyColor: '#D1D5DB',
+                    padding: 10,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: ctx => ' ₹' + ctx.parsed.y.toLocaleString('en-IN')
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: '#F3F4F6' },
+                    ticks: { color: '#6B7280', font: { family: 'Inter', size: 11 } }
+                },
+                y: {
+                    grid: { color: '#F3F4F6' },
+                    ticks: {
+                        color: '#6B7280',
+                        font: { family: 'Inter', size: 11 },
+                        callback: v => '₹' + v.toLocaleString('en-IN')
+                    }
+                }
+            }
         }
     });
 </script>
 
-<hr>
+<style>
+    /* Role chip */
+    .admin-role-chip {
+        display: inline-flex; align-items: center;
+        font-size: 0.75rem; font-weight: 600;
+        color: var(--primary);
+        background: var(--primary-light);
+        border: 1px solid rgba(37,99,235,0.2);
+        padding: 0.35rem 0.8rem; border-radius: 7px;
+    }
+    .topbar-date-chip {
+        display: inline-flex; align-items: center;
+        font-size: 0.75rem; font-weight: 500;
+        color: var(--text-secondary);
+        background: #F9FAFB;
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.8rem; border-radius: 7px;
+        gap: 0.3rem;
+    }
 
-<!-- LOW STOCK -->
-<h4>Low Stock Products</h4>
+    /* Chart period badge */
+    .chart-period-badge {
+        font-size: 0.72rem; font-weight: 600;
+        color: var(--text-secondary);
+        background: #F3F4F6;
+        border: 1px solid var(--border);
+        padding: 0.2rem 0.6rem; border-radius: 5px;
+    }
 
-<table class="table table-bordered">
-    <tr>
-        <th>Name</th>
-        <th>Stock</th>
-    </tr>
+    /* Stock alert list */
+    .stock-alert-list { list-style: none; margin: 0; padding: 0; }
+    .stock-alert-item {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.75rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+        transition: var(--transition);
+    }
+    .stock-alert-item:hover { background: #FEF2F2; }
+    .stock-alert-item:last-child { border-bottom: none; }
 
-    {% for product in low_stock_products %}
-    <tr>
-        <td>{{ product.name }}</td>
-        <td class="text-danger">{{ product.stock }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="2">No low stock items</td>
-    </tr>
-    {% endfor %}
-</table>
+    .stock-alert-icon {
+        width: 30px; height: 30px; border-radius: 7px;
+        background: #FEF2F2; color: var(--danger);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; flex-shrink: 0;
+    }
+    .stock-alert-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+    .stock-alert-qty  { font-size: 0.75rem; color: var(--text-secondary); }
+    .stock-alert-badge {
+        font-size: 0.68rem; font-weight: 700;
+        background: #FEF2F2; color: var(--danger);
+        border: 1px solid #FECACA;
+        padding: 0.15rem 0.5rem; border-radius: 5px;
+        margin-left: auto; flex-shrink: 0;
+    }
 
-<hr>
+    /* Empty state */
+    .empty-state {
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; padding: 2.5rem 1rem; text-align: center;
+    }
+    .empty-state-text { font-size: 0.84rem; color: var(--text-secondary); font-weight: 500; }
 
-<!-- RECENT INVOICES -->
-<h4>Recent Invoices</h4>
-
-<table class="table">
-    <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Total</th>
-    </tr>
-
-    {% for inv in recent_invoices %}
-    <tr>
-        <td>{{ inv.id }}</td>
-        <td>{{ inv.customer.name }}</td>
-        <td>₹{{ inv.grand_total }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="3">No invoices</td>
-    </tr>
-    {% endfor %}
-</table>
+    /* Invoice table extras */
+    .inv-id-badge {
+        font-size: 0.8rem; font-weight: 600;
+        color: var(--primary); background: var(--primary-light);
+        padding: 0.2rem 0.5rem; border-radius: 5px;
+    }
+    .cust-mini-avatar {
+        width: 26px; height: 26px; border-radius: 7px;
+        background: var(--primary); color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+    }
+</style>
 
 {% endblock %}
