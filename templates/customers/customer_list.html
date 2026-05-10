@@ -1,97 +1,331 @@
 {% extends 'layouts/admin_base.html' %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Customers</li>
+{% endblock %}
+
 {% block admin_content %}
 
-<h2>Customers</h2>
-
-<form method="GET" class="mb-3">
-    <input type="text" name="q" value="{{ search_query }}" placeholder="Search by name">
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
-
-<a href="{% url 'add_customer' %}" class="btn btn-success mb-3">Add Customer</a>
-
-<table class="table">
-    <tr>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>City</th>
-        <th>Actions</th>
-    </tr>
-
-    {% for customer in page_obj %}
-    <tr>
-        <td>{{ customer.name }}</td>
-        <td>{{ customer.phone }}</td>
-        <td>{{ customer.city }}</td>
-        <td>
-            <a href="{% url 'edit_customer' customer.id %}" class="btn btn-warning btn-sm">Edit</a>
-<button 
-    class="btn btn-danger btn-sm delete-btn"
-    data-id="{{ customer.id }}"
-    data-name="{{ customer.name }}"
-    data-bs-toggle="modal"
-    data-bs-target="#deleteModal">
-    Delete
-</button>        </td>
-    </tr>
-    {% endfor %}
-</table>
-
-<!-- Pagination -->
-<div>
-    {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}">Previous</a>
-    {% endif %}
-
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&q={{ search_query }}">Next</a>
-    {% endif %}
+<!-- PAGE HEADER -->
+<div class="section-header mb-4">
+    <div>
+        <h5>Customers</h5>
+        <div class="subtitle">Manage your customer records and contact information</div>
+    </div>
+    <a href="{% url 'add_customer' %}" class="btn btn-primary">
+        <i class="bi bi-person-plus-fill me-1"></i>Add Customer
+    </a>
 </div>
-<div class="modal fade" id="deleteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title text-danger">Delete Customer</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+<!-- TABLE CARD -->
+<div class="erp-table-wrap">
 
-      <div class="modal-body">
-        <p id="delete-text"></p>
-      </div>
-
-      <div class="modal-footer">
-        <form method="POST" id="delete-form">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <!-- TOOLBAR -->
+    <div class="table-toolbar">
+        <form method="GET" class="d-flex align-items-center gap-2 flex-grow-1">
+            <div class="search-wrap" style="max-width:300px;width:100%;">
+                <i class="bi bi-search"></i>
+                <input type="text"
+                       name="q"
+                       value="{{ search_query }}"
+                       class="form-control"
+                       placeholder="Search by name, phone, city…">
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-search me-1"></i>Search
+            </button>
+            {% if search_query %}
+            <a href="{% url 'customer_list' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-x-lg me-1"></i>Clear
+            </a>
+            {% endif %}
         </form>
 
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancel
-        </button>
-      </div>
-
+        <div class="toolbar-meta d-none d-md-flex align-items-center gap-2">
+            <span class="meta-chip">
+                <i class="bi bi-people-fill me-1"></i>
+                {{ page_obj.paginator.count }} customer{{ page_obj.paginator.count|pluralize }}
+            </span>
+        </div>
     </div>
-  </div>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+        <table class="table erp-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>City</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in page_obj %}
+                <tr>
+                    <td>
+                        <span class="row-index">{{ forloop.counter }}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="cust-avatar">
+                                {{ customer.name|slice:":1"|upper }}
+                            </div>
+                            <span class="fw-semibold">{{ customer.name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="d-flex align-items-center gap-1 text-secondary">
+                            <i class="bi bi-telephone-fill" style="font-size:0.75rem;"></i>
+                            {{ customer.phone }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="d-flex align-items-center gap-1 text-secondary">
+                            <i class="bi bi-geo-alt-fill" style="font-size:0.75rem;"></i>
+                            {{ customer.city }}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex align-items-center justify-content-end gap-1">
+                            <a href="{% url 'edit_customer' customer.id %}"
+                               class="btn btn-sm btn-outline-warning"
+                               title="Edit">
+                                <i class="bi bi-pencil-fill me-1"></i>Edit
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger delete-btn"
+                                    data-id="{{ customer.id }}"
+                                    data-name="{{ customer.name }}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                    title="Delete">
+                                <i class="bi bi-trash3-fill me-1"></i>Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state py-5">
+                            <i class="bi bi-people" style="font-size:2.2rem;color:#D1D5DB;"></i>
+                            <div class="empty-state-title mt-2">No customers found</div>
+                            <div class="empty-state-sub">
+                                {% if search_query %}
+                                    No results for "<strong>{{ search_query }}</strong>". Try a different search.
+                                {% else %}
+                                    Get started by adding your first customer.
+                                {% endif %}
+                            </div>
+                            {% if not search_query %}
+                            <a href="{% url 'add_customer' %}" class="btn btn-primary btn-sm mt-3">
+                                <i class="bi bi-person-plus-fill me-1"></i>Add Customer
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGINATION -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="table-footer">
+        <div class="pagination-info">
+            Showing <strong>{{ page_obj.start_index }}–{{ page_obj.end_index }}</strong>
+            of <strong>{{ page_obj.paginator.count }}</strong> customers
+        </div>
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}&q={{ search_query }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search_query }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
 </div>
+
+
+<!-- ===== DELETE MODAL ===== -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content erp-modal">
+
+            <div class="modal-header erp-modal-header danger-header">
+                <div class="modal-danger-icon">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                    <h6 class="modal-title mb-0" id="deleteModalLabel">Delete Customer</h6>
+                    <div class="modal-subtitle">This action cannot be undone</div>
+                </div>
+                <button type="button" class="btn-close btn-close-custom" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body erp-modal-body">
+                <p id="delete-text" class="mb-0"></p>
+            </div>
+
+            <div class="modal-footer erp-modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>Cancel
+                </button>
+                <form method="POST" id="delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3-fill me-1"></i>Yes, Delete
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<style>
+    /* Customer avatar */
+    .cust-avatar {
+        width: 32px; height: 32px;
+        border-radius: 9px;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-size: 0.8rem; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+
+    /* Row index */
+    .row-index {
+        font-size: 0.78rem; font-weight: 600;
+        color: var(--text-secondary);
+        background: #F3F4F6;
+        padding: 0.15rem 0.5rem;
+        border-radius: 5px;
+    }
+
+    /* Toolbar meta chip */
+    .meta-chip {
+        font-size: 0.78rem; font-weight: 600;
+        color: var(--text-secondary);
+        background: #F3F4F6;
+        border: 1px solid var(--border);
+        padding: 0.3rem 0.75rem;
+        border-radius: 6px;
+        display: flex; align-items: center;
+    }
+
+    /* Table footer / pagination bar */
+    .table-footer {
+        padding: 0.85rem 1.25rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        background: #FAFAFA;
+    }
+    .pagination-info {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+
+    /* Empty state */
+    .empty-state {
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        text-align: center; padding: 3rem 1rem;
+    }
+    .empty-state-title {
+        font-size: 0.95rem; font-weight: 600;
+        color: var(--text-primary); margin-bottom: 0.3rem;
+    }
+    .empty-state-sub {
+        font-size: 0.82rem; color: var(--text-secondary);
+    }
+
+    /* ── MODAL ── */
+    .erp-modal {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+    .erp-modal-header {
+        padding: 1.2rem 1.4rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+    }
+    .danger-header { background: #FEF2F2; }
+    .modal-danger-icon {
+        width: 40px; height: 40px;
+        border-radius: 10px;
+        background: #FEE2E2;
+        color: var(--danger);
+        font-size: 1.1rem;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .modal-subtitle {
+        font-size: 0.75rem; color: #B91C1C; margin-top: 1px;
+    }
+    .btn-close-custom {
+        margin-left: auto;
+        opacity: 0.5;
+    }
+    .erp-modal-body {
+        padding: 1.4rem;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        line-height: 1.6;
+    }
+    .erp-modal-footer {
+        padding: 1rem 1.4rem;
+        border-top: 1px solid var(--border);
+        background: #FAFAFA;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.6rem;
+    }
+</style>
+
 <script>
-document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', function () {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const customerId   = this.getAttribute('data-id');
+            const customerName = this.getAttribute('data-name');
 
-        let customerId = this.getAttribute('data-id');
-        let customerName = this.getAttribute('data-name');
+            document.getElementById('delete-text').innerHTML =
+                `Are you sure you want to permanently delete <strong>${customerName}</strong>? All related records will be affected.`;
 
-        // update text
-        document.getElementById('delete-text').innerText =
-            "Are you sure you want to delete " + customerName + "?";
-
-        // update form action dynamically
-        document.getElementById('delete-form').action =
-            "/customers/delete/" + customerId + "/";
+            document.getElementById('delete-form').action =
+                `/customers/delete/${customerId}/`;
+        });
     });
-});
 </script>
+
 {% endblock %}
