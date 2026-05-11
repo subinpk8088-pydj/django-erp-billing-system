@@ -1,15 +1,121 @@
 {% extends 'layouts/admin_base.html' %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'customer_list' %}">Customers</a></li>
+<li class="breadcrumb-item active">Add Customer</li>
+{% endblock %}
+
 {% block admin_content %}
 
-<h2>Add Customer</h2>
+<!-- PAGE HEADER -->
+<div class="section-header mb-4">
+    <div>
+        <h5>Add Customer</h5>
+        <div class="subtitle">Fill in the details below to create a new customer record</div>
+    </div>
+    <a href="{% url 'customer_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Customers
+    </a>
+</div>
 
-<form method="POST">
-    {% csrf_token %}
+<!-- FORM CARD -->
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-xl-6">
+        <div class="card">
 
-    {{ form.as_p }}
+            <div class="card-header d-flex align-items-center gap-2">
+                <div class="form-card-icon">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <span>Customer Information</span>
+            </div>
 
-    <button type="submit" class="btn btn-success">Save</button>
-</form>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                                <span class="required-star">*</span>
+                            {% endif %}
+                        </label>
+
+                        {% if field.field.widget.input_type == 'select' %}
+                            <select name="{{ field.html_name }}"
+                                    id="{{ field.id_for_label }}"
+                                    class="form-select {% if field.errors %}is-invalid{% endif %}">
+                                {{ field }}
+                            </select>
+                        {% elif field.field.widget.input_type == 'textarea' %}
+                            <textarea name="{{ field.html_name }}"
+                                      id="{{ field.id_for_label }}"
+                                      rows="3"
+                                      class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                      placeholder="{{ field.label }}">{{ field.value|default:'' }}</textarea>
+                        {% else %}
+                            <input type="{{ field.field.widget.input_type }}"
+                                   name="{{ field.html_name }}"
+                                   id="{{ field.id_for_label }}"
+                                   value="{{ field.value|default:'' }}"
+                                   class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                   placeholder="Enter {{ field.label|lower }}"
+                                   {% if field.field.required %}required{% endif %}>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ field.errors|join:", " }}
+                            </div>
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <div class="form-text text-secondary" style="font-size:0.78rem;">
+                                <i class="bi bi-info-circle me-1"></i>{{ field.help_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- FORM ACTIONS -->
+                    <div class="form-actions mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle-fill me-1"></i>Save Customer
+                        </button>
+                        <a href="{% url 'customer_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg me-1"></i>Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-card-icon {
+        width: 30px; height: 30px;
+        border-radius: 8px;
+        background: var(--primary-light);
+        color: var(--primary);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.9rem; flex-shrink: 0;
+    }
+    .required-star {
+        color: var(--danger);
+        margin-left: 2px;
+        font-size: 0.85rem;
+    }
+    .form-actions {
+        display: flex;
+        gap: 0.6rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border);
+    }
+</style>
 
 {% endblock %}
