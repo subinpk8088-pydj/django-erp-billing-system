@@ -1,41 +1,102 @@
 {% extends 'layouts/admin_base.html' %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'expense_list' %}">Expenses</a></li>
+<li class="breadcrumb-item active">Delete Expense</li>
+{% endblock %}
+
 {% block admin_content %}
 
-<h2>Delete Expense</h2>
+<div class="row justify-content-center mt-3">
+    <div class="col-lg-5 col-md-7">
 
-<div class="card p-4">
+        <div class="card delete-confirm-card">
 
-    <p>
+            <!-- DANGER HEADER -->
+            <div class="delete-confirm-header">
+                <div class="delete-confirm-icon-wrap">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div class="delete-confirm-title">Delete Expense</div>
+                <div class="delete-confirm-sub">This action is permanent and cannot be undone</div>
+            </div>
 
-        Are you sure you want to delete:
+            <!-- BODY -->
+            <div class="card-body p-4">
 
-        <strong>
-            {{ expense.title }}
-        </strong> ?
+                <div class="expense-preview-box mb-4">
+                    <div class="expense-preview-label">You are about to delete</div>
+                    <div class="expense-preview-name">
+                        <i class="bi bi-cash-stack me-2 text-danger"></i>{{ expense.title }}
+                    </div>
+                </div>
 
-    </p>
+                <p class="confirm-body-text">
+                    Are you sure you want to permanently delete this expense record?
+                    This cannot be recovered.
+                </p>
 
-    <form method="POST">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-danger flex-grow-1">
+                            <i class="bi bi-trash3-fill me-1"></i>Confirm Delete
+                        </button>
+                        <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary flex-grow-1">
+                            <i class="bi bi-x-lg me-1"></i>Cancel
+                        </a>
+                    </div>
+                </form>
 
-        {% csrf_token %}
+            </div>
 
-        <button type="submit"
-                class="btn btn-danger">
+        </div>
 
-            Confirm Delete
-
-        </button>
-
-        <a href="{% url 'expense_list' %}"
-           class="btn btn-secondary">
-
-            Cancel
-
-        </a>
-
-    </form>
-
+    </div>
 </div>
+
+<style>
+    .delete-confirm-card {
+        border: 1px solid #FECACA;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 32px rgba(220,38,38,0.08);
+        overflow: hidden;
+    }
+    .delete-confirm-header {
+        background: #FEF2F2;
+        border-bottom: 1px solid #FECACA;
+        padding: 1.75rem 1.5rem 1.5rem;
+        text-align: center;
+    }
+    .delete-confirm-icon-wrap {
+        width: 56px; height: 56px; border-radius: 50%;
+        background: #FEE2E2; color: var(--danger);
+        font-size: 1.5rem;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 0.85rem;
+    }
+    .delete-confirm-title {
+        font-size: 1.05rem; font-weight: 700; color: #991B1B;
+    }
+    .delete-confirm-sub {
+        font-size: 0.78rem; color: #B91C1C; margin-top: 0.25rem;
+    }
+    .expense-preview-box {
+        background: #F9FAFB; border: 1px solid var(--border);
+        border-radius: var(--radius-md); padding: 0.9rem 1.1rem;
+    }
+    .expense-preview-label {
+        font-size: 0.72rem; font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase; letter-spacing: 0.06em;
+        margin-bottom: 0.4rem;
+    }
+    .expense-preview-name {
+        font-size: 0.95rem; font-weight: 700; color: var(--text-primary);
+    }
+    .confirm-body-text {
+        font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; margin: 0;
+    }
+</style>
 
 {% endblock %}

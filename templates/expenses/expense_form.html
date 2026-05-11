@@ -1,26 +1,112 @@
 {% extends 'layouts/admin_base.html' %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'expense_list' %}">Expenses</a></li>
+<li class="breadcrumb-item active">Add Expense</li>
+{% endblock %}
+
 {% block admin_content %}
 
-<h2>Add Expense</h2>
-
-<div class="card p-4">
-
-    <form method="POST">
-
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit"
-                class="btn btn-primary">
-
-            Save Expense
-
-        </button>
-
-    </form>
-
+<div class="section-header mb-4">
+    <div>
+        <h5>Add Expense</h5>
+        <div class="subtitle">Record a new business expense entry</div>
+    </div>
+    <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Expenses
+    </a>
 </div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-xl-6">
+        <div class="card">
+
+            <div class="card-header d-flex align-items-center gap-2">
+                <div class="form-card-icon" style="background:#FEF2F2;color:var(--danger);">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <span>Expense Details</span>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <div class="form-actions mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle-fill me-1"></i>Save Expense
+                        </button>
+                        <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg me-1"></i>Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-card-icon {
+        width: 30px; height: 30px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.9rem; flex-shrink: 0;
+    }
+    .form-actions {
+        display: flex; gap: 0.6rem;
+        padding-top: 0.75rem; border-top: 1px solid var(--border);
+    }
+    /* Style as_p rendered fields */
+    .card-body input[type=text],
+    .card-body input[type=number],
+    .card-body input[type=date],
+    .card-body input[type=email],
+    .card-body select,
+    .card-body textarea {
+        width: 100%;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.875rem;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 0.85rem;
+        color: var(--text-primary);
+        background: #FAFAFA;
+        transition: var(--transition);
+        margin-top: 0.25rem;
+        display: block;
+    }
+    .card-body input:focus,
+    .card-body select:focus,
+    .card-body textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        background: #fff;
+        outline: none;
+    }
+    .card-body p { margin-bottom: 1rem; }
+    .card-body p label {
+        font-weight: 500;
+        font-size: 0.83rem;
+        color: var(--text-primary);
+        display: block;
+        margin-bottom: 0.2rem;
+    }
+    .card-body ul.errorlist {
+        list-style: none; padding: 0; margin: 0.25rem 0 0;
+    }
+    .card-body ul.errorlist li {
+        font-size: 0.78rem;
+        color: var(--danger);
+    }
+    .card-body ul.errorlist li::before {
+        content: '\F333';
+        font-family: 'bootstrap-icons';
+        margin-right: 4px;
+    }
+</style>
 
 {% endblock %}

@@ -167,6 +167,8 @@ def category_list(request):
 
 @login_required
 @admin_required
+@login_required
+@admin_required
 def create_category(request):
 
     form = ExpenseCategoryForm(
@@ -185,7 +187,7 @@ def create_category(request):
             )
 
             return redirect(
-                'category_list_expense'
+                'expense_category_list'
             )
 
     return render(

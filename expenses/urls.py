@@ -3,6 +3,10 @@ from .views import *
 
 urlpatterns = [
 
+    # =========================================
+    # EXPENSES
+    # =========================================
+
     path(
         '',
         expense_list,
@@ -20,6 +24,10 @@ urlpatterns = [
         delete_expense,
         name='delete_expense'
     ),
+
+    # =========================================
+    # EXPENSE CATEGORIES
+    # =========================================
 
     path(
         'categories/',
