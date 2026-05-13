@@ -1,67 +1,68 @@
 {% extends 'layouts/admin_base.html' %}
-
+{% block breadcrumb %}<li class="breadcrumb-item active">Invoices</li>{% endblock %}
 {% block admin_content %}
 
-<h2>Invoices</h2>
+<div class="section-header mb-4">
+    <div>
+        <h5>Invoices</h5>
+        <div class="subtitle">Manage all customer invoices</div>
+    </div>
+    <a href="{% url 'create_invoice' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle-fill me-1"></i>Create Invoice
+    </a>
+</div>
 
-<a href="{% url 'create_invoice' %}"
-   class="btn btn-success mb-3">
+<div class="erp-table-wrap">
+    <div class="table-responsive">
+        <table class="table erp-table">
+            <thead>
+                <tr>
+                    <th>#ID</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for invoice in invoices %}
+            <tr>
+                <td><span class="idx-badge">#{{ invoice.id }}</span></td>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="av">{{ invoice.customer.name|slice:":1"|upper }}</div>
+                        <span class="fw-semibold">{{ invoice.customer.name }}</span>
+                    </div>
+                </td>
+                <td><strong>₹{{ invoice.grand_total }}</strong></td>
+                <td>
+                    {% if invoice.status == 'paid' %}<span class="badge-status-paid">Paid</span>
+                    {% elif invoice.status == 'partial' %}<span class="badge-status-pending">Partial</span>
+                    {% else %}<span class="badge-status-overdue">Unpaid</span>{% endif %}
+                </td>
+                <td class="text-end">
+                    <a href="{% url 'invoice_detail' invoice.id %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                    <a href="{% url 'edit_invoice' invoice.id %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil-fill"></i></a>
+                    <a href="{% url 'delete_invoice' invoice.id %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3-fill"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">
+                <div class="es py-5">
+                    <i class="bi bi-receipt" style="font-size:2rem;color:#D1D5DB;"></i>
+                    <div class="fw-semibold mt-2">No invoices yet</div>
+                    <a href="{% url 'create_invoice' %}" class="btn btn-primary btn-sm mt-3">Create Invoice</a>
+                </div>
+            </td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-    Create Invoice
-
-</a>
-
-<table class="table table-bordered">
-
-    <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Total</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
-
-    {% for invoice in invoices %}
-
-    <tr>
-
-        <td>{{ invoice.id }}</td>
-
-        <td>{{ invoice.customer.name }}</td>
-
-        <td>₹{{ invoice.grand_total }}</td>
-
-        <td>{{ invoice.status }}</td>
-
-        <td>
-
-            <a href="{% url 'invoice_detail' invoice.id %}"
-               class="btn btn-info btn-sm">
-
-                View
-
-            </a>
-
-            <a href="{% url 'edit_invoice' invoice.id %}"
-               class="btn btn-warning btn-sm">
-
-                Edit
-
-            </a>
-
-            <a href="{% url 'delete_invoice' invoice.id %}"
-               class="btn btn-danger btn-sm">
-
-                Delete
-
-            </a>
-
-        </td>
-
-    </tr>
-
-    {% endfor %}
-
-</table>
-
+<style>
+.av{width:30px;height:30px;border-radius:8px;background:var(--primary-light);color:var(--primary);font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.idx-badge{font-size:.78rem;font-weight:600;color:var(--text-secondary);background:#F3F4F6;padding:.15rem .5rem;border-radius:5px}
+.es{display:flex;flex-direction:column;align-items:center;text-align:center}
+</style>
 {% endblock %}

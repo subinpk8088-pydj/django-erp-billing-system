@@ -1,74 +1,110 @@
 {% extends 'layouts/admin_base.html' %}
-
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'invoice_list' %}">Invoices</a></li>
+<li class="breadcrumb-item active">Invoice #{{ invoice.id }}</li>
+{% endblock %}
 {% block admin_content %}
 
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center">
-        <h2>Invoice #{{ invoice.id }}</h2>
-
-        <div>
-            <a href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-secondary btn-sm">
-                Download PDF
-            </a>
-
-            {% if invoice.status != 'paid' %}
-            <a href="{% url 'mark_paid' invoice.id %}" class="btn btn-success btn-sm">
-                Mark as Paid
-            </a>
-            {% endif %}
-        </div>
+<div class="section-header mb-4">
+    <div>
+        <h5>Invoice #{{ invoice.id }}</h5>
+        <div class="subtitle">{{ invoice.date|date:"d M Y, H:i" }}</div>
     </div>
-
-    <hr>
-
-    <p><strong>Customer:</strong> {{ invoice.customer.name }}</p>
-    <p><strong>Date:</strong> {{ invoice.date|date:"d M Y, H:i" }}</p>
-
-    <p>
-        <strong>Status:</strong>
-        {% if invoice.status == 'paid' %}
-            <span class="badge bg-success">Paid</span>
-        {% elif invoice.status == 'partial' %}
-            <span class="badge bg-warning text-dark">Partial</span>
-        {% else %}
-            <span class="badge bg-danger">Unpaid</span>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-file-earmark-pdf-fill me-1"></i>Download PDF
+        </a>
+        {% if invoice.status != 'paid' %}
+        <a href="{% url 'mark_paid' invoice.id %}" class="btn btn-success">
+            <i class="bi bi-check-circle-fill me-1"></i>Mark as Paid
+        </a>
         {% endif %}
-    </p>
-
-    <hr>
-
-    <h4>Items</h4>
-
-    <table class="table table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Price (₹)</th>
-                <th>Total (₹)</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        {% for item in items %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.price }}</td>
-            <td>{{ item.get_total }}</td>
-        </tr>
-        {% endfor %}
-
-        </tbody>
-    </table>
-
-    <div class="text-end">
-        <p><strong>Subtotal:</strong> ₹{{ invoice.total_amount }}</p>
-        <p><strong>GST (18%):</strong> ₹{{ invoice.gst_amount }}</p>
-        <h4><strong>Grand Total: ₹{{ invoice.grand_total }}</strong></h4>
     </div>
-
 </div>
 
+<div class="row g-3 mb-4">
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-person-fill text-primary me-2"></i>Customer & Status</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="dl">Customer</div>
+                        <div class="dv d-flex align-items-center gap-2">
+                            <div class="av">{{ invoice.customer.name|slice:":1"|upper }}</div>
+                            {{ invoice.customer.name }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dl">Date</div>
+                        <div class="dv">{{ invoice.date|date:"d M Y, H:i" }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dl">Status</div>
+                        <div class="dv">
+                            {% if invoice.status == 'paid' %}<span class="badge-status-paid">Paid</span>
+                            {% elif invoice.status == 'partial' %}<span class="badge-status-pending">Partial</span>
+                            {% else %}<span class="badge-status-overdue">Unpaid</span>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-calculator text-success me-2"></i>Summary</div>
+            <div class="card-body p-0">
+                <div class="sr"><span>Subtotal</span><span>₹{{ invoice.total_amount }}</span></div>
+                <div class="sr"><span>GST (18%)</span><span>₹{{ invoice.gst_amount }}</span></div>
+                <div class="sr grand"><span>Grand Total</span><span>₹{{ invoice.grand_total }}</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="erp-table-wrap">
+    <div class="table-toolbar">
+        <i class="bi bi-box-seam-fill text-primary me-2"></i>
+        <span style="font-weight:600;">Invoice Items</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table erp-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Price (₹)</th>
+                    <th class="text-end">Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in items %}
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="pi"><i class="bi bi-box-seam-fill"></i></div>
+                        <span class="fw-semibold">{{ item.product.name }}</span>
+                    </div>
+                </td>
+                <td><span class="qc">{{ item.quantity }}</span></td>
+                <td>₹{{ item.price }}</td>
+                <td class="text-end fw-bold">₹{{ item.get_total }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.av{width:28px;height:28px;border-radius:7px;background:var(--primary-light);color:var(--primary);font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dl{font-size:.72rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.dv{font-size:.88rem;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:.4rem}
+.sr{display:flex;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+.sr:last-child{border-bottom:none}
+.sr.grand{background:#F9FAFB;font-size:1rem;font-weight:800}
+.pi{width:28px;height:28px;border-radius:7px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.qc{background:#F3F4F6;font-size:.8rem;font-weight:600;padding:.15rem .55rem;border-radius:5px}
+</style>
 {% endblock %}

@@ -1,58 +1,87 @@
 {% extends 'layouts/admin_base.html' %}
-
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'invoice_list' %}">Invoices</a></li>
+<li class="breadcrumb-item active">Create Invoice</li>
+{% endblock %}
 {% block admin_content %}
 
-<h2>Create Invoice</h2>
-
-<form method="POST">
-    {% csrf_token %}
-
-    {{ form.as_p }}
-
-    <h4>Items</h4>
-
-    <div id="formset-container">
-        {{ formset.management_form }}
-
-        {% for form in formset %}
-        <div class="item-form border p-2 mb-2">
-            {{ form.as_p }}
-            <button type="button" class="btn btn-danger remove-item">Remove</button>
-        </div>
-        {% endfor %}
+<div class="section-header mb-4">
+    <div>
+        <h5>Create Invoice</h5>
+        <div class="subtitle">Add customer details and line items</div>
     </div>
+    <a href="{% url 'invoice_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+    </a>
+</div>
 
-    <button type="button" id="add-item" class="btn btn-secondary mb-3">
-        Add Item
-    </button>
+<form method="POST" novalidate>
+{% csrf_token %}
 
-    <br>
-    <button type="submit" class="btn btn-success">Save Invoice</button>
+<div class="card mb-3">
+    <div class="card-header"><i class="bi bi-receipt text-primary me-2"></i>Invoice Info</div>
+    <div class="card-body fp">{{ form.as_p }}</div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <span><i class="bi bi-box-seam-fill text-primary me-2"></i>Items</span>
+        <button type="button" id="add-item" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-plus-circle me-1"></i>Add Item
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="formset-container">
+            {{ formset.management_form }}
+            {% for form in formset %}
+            <div class="item-form">
+                <div class="fp p-3">{{ form.as_p }}</div>
+                <div class="item-footer">
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-item">
+                        <i class="bi bi-trash3-fill me-1"></i>Remove
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle-fill me-1"></i>Save Invoice</button>
+    <a href="{% url 'invoice_list' %}" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i>Cancel</a>
+</div>
+
 </form>
+
 <script>
 document.getElementById('add-item').addEventListener('click', function () {
     let container = document.getElementById('formset-container');
     let forms = document.querySelectorAll('.item-form');
     let totalForms = document.getElementById('id_items-TOTAL_FORMS');
-
     let newForm = forms[0].cloneNode(true);
-
     let formIndex = forms.length;
-
     newForm.innerHTML = newForm.innerHTML.replace(/items-\d+/g, 'items-' + formIndex);
-
     container.appendChild(newForm);
-
     totalForms.value = formIndex + 1;
 });
-
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('remove-item')) {
         e.target.closest('.item-form').remove();
-
         let totalForms = document.getElementById('id_items-TOTAL_FORMS');
         totalForms.value = document.querySelectorAll('.item-form').length;
     }
 });
 </script>
+
+<style>
+/* as_p field styling */
+.fp p{margin-bottom:.9rem}
+.fp p label{display:block;font-weight:500;font-size:.83rem;color:var(--text-primary);margin-bottom:.25rem}
+.fp input,.fp select,.fp textarea{display:block;width:100%;font-family:'Inter',sans-serif;font-size:.875rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.48rem .85rem;color:var(--text-primary);background:#FAFAFA;transition:var(--transition)}
+.fp input:focus,.fp select:focus,.fp textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1);background:#fff;outline:none}
+/* item form */
+.item-form{border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:.75rem;overflow:hidden}
+.item-footer{background:#FAFAFA;border-top:1px solid var(--border);padding:.6rem 1rem;display:flex;justify-content:flex-end}
+</style>
 {% endblock %}
