@@ -1,22 +1,152 @@
 {% extends 'layouts/admin_base.html' %}
-
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'payment_list' %}">Payments</a></li>
+<li class="breadcrumb-item active">Add Payment</li>
+{% endblock %}
 {% block admin_content %}
 
-<h2>Add Payment</h2>
+<div class="section-header mb-4">
+    <div>
+        <h5>Add Payment</h5>
+        <div class="subtitle">Record customer invoice payments</div>
+    </div>
+    <a href="{% url 'payment_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+    </a>
+</div>
 
-<form method="POST">
+<div class="row justify-content-center">
+<div class="col-lg-7">
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-credit-card-fill text-primary me-2"></i>Payment Details
+    </div>
+    <div class="card-body">
+        <form method="POST" novalidate>
+            {% csrf_token %}
 
-    {% csrf_token %}
+            <!-- INVOICE SELECT -->
+            <div class="mb-3">
+                <label class="form-label">Select Invoice <span class="req">*</span></label>
+                {{ form.invoice }}
+            </div>
 
-    {{ form.as_p }}
+            <!-- AUTO INVOICE INFO PANEL -->
+            <div id="invoice-info" class="inv-info-panel mb-4" style="display:none;">
+                <div class="inv-info-header">
+                    <i class="bi bi-info-circle-fill me-2"></i>Invoice Details
+                </div>
+                <div class="inv-info-body">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="iil">Invoice ID</div>
+                            <div class="iiv" id="invoice-id">—</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="iil">Customer</div>
+                            <div class="iiv" id="customer-name">—</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="iil">Total Amount</div>
+                            <div class="iiv text-primary">₹<span id="total-amount">—</span></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="iil">Paid Amount</div>
+                            <div class="iiv text-success">₹<span id="paid-amount">—</span></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="iil">Balance Due</div>
+                            <div class="iiv text-danger fw-bold">₹<span id="balance-due">—</span></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="iil">Status</div>
+                            <div class="iiv" id="payment-status">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <button type="submit"
-            class="btn btn-primary">
+            <!-- AMOUNT -->
+            <div class="mb-3">
+                <label class="form-label">Payment Amount <span class="req">*</span></label>
+                {{ form.amount }}
+            </div>
 
-        Save Payment
+            <!-- METHOD -->
+            <div class="mb-3">
+                <label class="form-label">Payment Method <span class="req">*</span></label>
+                {{ form.payment_method }}
+            </div>
 
-    </button>
+            <!-- REFERENCE -->
+            <div class="mb-3">
+                <label class="form-label">Reference Number</label>
+                {{ form.reference_number }}
+            </div>
 
-</form>
+            <div class="d-flex gap-2 pt-3" style="border-top:1px solid var(--border);">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle-fill me-1"></i>Save Payment
+                </button>
+                <a href="{% url 'payment_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-lg me-1"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const invoiceSelect = document.getElementById('id_invoice');
+    invoiceSelect.addEventListener('change', function () {
+        const invoiceId = this.value;
+        if (!invoiceId) {
+            document.getElementById('invoice-info').style.display = 'none';
+            return;
+        }
+        fetch(`/payments/invoice-details/${invoiceId}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('invoice-info').style.display = 'block';
+            document.getElementById('invoice-id').innerText      = data.invoice_id;
+            document.getElementById('customer-name').innerText   = data.customer;
+            document.getElementById('total-amount').innerText    = data.total_amount;
+            document.getElementById('paid-amount').innerText     = data.paid_amount;
+            document.getElementById('balance-due').innerText     = data.balance_due;
+            document.getElementById('payment-status').innerText  = data.status;
+        });
+    });
+});
+</script>
+
+<style>
+/* Form field styling */
+.card-body input, .card-body select, .card-body textarea {
+    display:block;width:100%;font-family:'Inter',sans-serif;font-size:.875rem;
+    border:1.5px solid var(--border);border-radius:var(--radius-sm);
+    padding:.48rem .85rem;color:var(--text-primary);background:#FAFAFA;
+    transition:var(--transition);
+}
+.card-body input:focus,.card-body select:focus,.card-body textarea:focus {
+    border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1);background:#fff;outline:none;
+}
+.form-label{font-weight:500;font-size:.83rem;color:var(--text-primary);margin-bottom:.3rem}
+.req{color:var(--danger);margin-left:2px}
+
+/* Invoice info panel */
+.inv-info-panel{
+    border:1px solid #BFDBFE;border-radius:var(--radius-md);overflow:hidden;
+}
+.inv-info-header{
+    background:var(--primary-light);color:var(--primary);
+    font-size:.82rem;font-weight:600;padding:.65rem 1rem;
+    display:flex;align-items:center;border-bottom:1px solid #BFDBFE;
+}
+.inv-info-body{padding:.9rem 1rem}
+.iil{font-size:.7rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
+.iiv{font-size:.87rem;font-weight:600;color:var(--text-primary)}
+</style>
 {% endblock %}

@@ -126,3 +126,35 @@ def payment_detail(request, pk):
             'payment': payment
         }
     )
+from django.http import JsonResponse    
+@login_required
+@accountant_required
+
+
+@login_required
+@accountant_required
+def invoice_details_api(request, invoice_id):
+
+    invoice = get_object_or_404(
+        Invoice,
+        id=invoice_id
+    )
+
+    data = {
+
+        'invoice_id': invoice.id,
+
+        'customer': invoice.customer.name,
+
+        'total_amount': str(invoice.total_amount),
+
+        'grand_total': str(invoice.grand_total),
+
+        'paid_amount': str(invoice.total_paid),
+
+        'balance_due': str(invoice.balance_due),
+
+        'status': invoice.status,
+    }
+
+    return JsonResponse(data)

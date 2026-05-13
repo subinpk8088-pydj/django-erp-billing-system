@@ -1,39 +1,77 @@
 {% extends 'layouts/admin_base.html' %}
-
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'payment_list' %}">Payments</a></li>
+<li class="breadcrumb-item active">Payment Details</li>
+{% endblock %}
 {% block admin_content %}
 
-<h2>Payment Details</h2>
+<div class="section-header mb-4">
+    <div>
+        <h5>Payment Details</h5>
+        <div class="subtitle">Full transaction information</div>
+    </div>
+    <a href="{% url 'payment_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+    </a>
+</div>
 
-<hr>
+<div class="row justify-content-center">
+<div class="col-lg-7">
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-credit-card-fill text-primary me-2"></i>Transaction Info
+    </div>
+    <div class="card-body p-0">
 
-<p>
-    <strong>Invoice:</strong>
-    INV-{{ payment.invoice.id }}
-</p>
+        <div class="dr">
+            <div class="dr-label"><i class="bi bi-receipt me-2"></i>Invoice</div>
+            <div class="dr-val">
+                <span class="inv-chip"><i class="bi bi-receipt me-1"></i>INV-{{ payment.invoice.id }}</span>
+            </div>
+        </div>
 
-<p>
-    <strong>Amount:</strong>
-    ₹{{ payment.amount }}
-</p>
+        <div class="dr">
+            <div class="dr-label"><i class="bi bi-currency-rupee me-2"></i>Amount</div>
+            <div class="dr-val"><span class="amt">₹{{ payment.amount }}</span></div>
+        </div>
 
-<p>
-    <strong>Method:</strong>
-    {{ payment.payment_method }}
-</p>
+        <div class="dr">
+            <div class="dr-label"><i class="bi bi-credit-card me-2"></i>Method</div>
+            <div class="dr-val">
+                <span class="method-chip"><i class="bi bi-credit-card me-1"></i>{{ payment.payment_method }}</span>
+            </div>
+        </div>
 
-<p>
-    <strong>Reference:</strong>
-    {{ payment.reference_number }}
-</p>
+        <div class="dr">
+            <div class="dr-label"><i class="bi bi-hash me-2"></i>Reference</div>
+            <div class="dr-val fw-semibold">{{ payment.reference_number }}</div>
+        </div>
 
-<p>
-    <strong>Received By:</strong>
-    {{ payment.received_by }}
-</p>
+        <div class="dr">
+            <div class="dr-label"><i class="bi bi-person-fill me-2"></i>Received By</div>
+            <div class="dr-val d-flex align-items-center gap-2">
+                <div class="av">{{ payment.received_by|slice:":1"|upper }}</div>
+                {{ payment.received_by }}
+            </div>
+        </div>
 
-<p>
-    <strong>Date:</strong>
-    {{ payment.created_at }}
-</p>
+        <div class="dr" style="border-bottom:none;">
+            <div class="dr-label"><i class="bi bi-clock me-2"></i>Date</div>
+            <div class="dr-val text-secondary">{{ payment.created_at }}</div>
+        </div>
 
+    </div>
+</div>
+</div>
+</div>
+
+<style>
+.dr{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--border);gap:1rem;flex-wrap:wrap}
+.dr-label{font-size:.82rem;font-weight:600;color:var(--text-secondary);display:flex;align-items:center;min-width:130px}
+.dr-val{font-size:.88rem;font-weight:500;color:var(--text-primary)}
+.amt{font-size:1.2rem;font-weight:800;color:var(--success)}
+.inv-chip{display:inline-flex;align-items:center;font-size:.78rem;font-weight:600;background:var(--primary-light);color:var(--primary);border:1px solid #BFDBFE;padding:.2rem .6rem;border-radius:6px}
+.method-chip{display:inline-flex;align-items:center;font-size:.78rem;font-weight:600;background:#F0FDF4;color:var(--success);border:1px solid #BBF7D0;padding:.2rem .6rem;border-radius:6px}
+.av{width:28px;height:28px;border-radius:7px;background:var(--primary-light);color:var(--primary);font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+</style>
 {% endblock %}
