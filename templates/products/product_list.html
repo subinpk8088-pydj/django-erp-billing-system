@@ -1,69 +1,156 @@
+<!-- ========================= -->
+<!-- PRODUCT LIST -->
+<!-- ========================= -->
+
 {% extends 'layouts/admin_base.html' %}
 
 {% block admin_content %}
 
-<h2>Products</h2>
+<div class="container-fluid py-4">
 
-<a href="{% url 'add_product' %}" class="btn btn-success mb-3">
-    Add Product
-</a>
+    <div class="card border-0 shadow-sm rounded-4">
 
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>Name</th>
-            <th>SKU</th>
-            <th>Category</th>
-            <th>Stock</th>
-            <th>Selling Price</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-    <tbody>
-    {% for product in products %}
-        <tr>
-            <td>{{ product.name }}</td>
-            <td>{{ product.sku }}</td>
+            <div>
+                <h2 class="fw-bold mb-1">Products</h2>
 
-            <!-- Category -->
-            <td>{{ product.category.name|default:"No Category" }}</td>
+                <p class="text-muted mb-0">
+                    Manage inventory products
+                </p>
+            </div>
 
-            <!-- Stock with alert -->
-            <td>
-                {% if product.stock <= product.low_stock_threshold %}
-                    <span class="text-danger fw-bold">
-                        {{ product.stock }} (Low)
-                    </span>
-                {% else %}
-                    {{ product.stock }}
-                {% endif %}
-            </td>
+            <a href="{% url 'add_product' %}"
+               class="btn btn-primary rounded-3 px-4 py-2">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add Product
+            </a>
 
-            <td>₹{{ product.selling_price }}</td>
+        </div>
 
-            <!-- Actions -->
-            <td>
-                <a href="{% url 'edit_product' product.id %}" class="btn btn-warning btn-sm">
-                    Edit
-                </a>
+        <div class="card-body p-4">
 
-                <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">
-                    Delete
-                </a>
+            <div class="row mb-4">
+                <div class="col-md-4">
 
-                <a href="{% url 'update_stock' product.id %}" class="btn btn-info btn-sm">
-                    Stock
-                </a>
-            </td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="6" class="text-center">No products found</td>
-        </tr>
-    {% endfor %}
-    </tbody>
+                    <div class="input-group shadow-sm">
 
-</table>
+                        <span class="input-group-text bg-white border-end-0 rounded-start-3">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+
+                        <input type="text"
+                               class="form-control border-start-0 rounded-end-3"
+                               placeholder="Search products...">
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table align-middle table-hover">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th class="py-3">Name</th>
+                            <th class="py-3">SKU</th>
+                            <th class="py-3">Category</th>
+                            <th class="py-3">Stock</th>
+                            <th class="py-3">Price</th>
+                            <th class="py-3 text-center">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for product in products %}
+
+                        <tr>
+
+                            <td class="fw-semibold py-3">
+                                {{ product.name }}
+                            </td>
+
+                            <td>
+                                {{ product.sku }}
+                            </td>
+
+                            <td>
+                                {{ product.category.name|default:"No Category" }}
+                            </td>
+
+                            <td>
+
+                                {% if product.stock <= product.low_stock_threshold %}
+
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+                                    {{ product.stock }} Low
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+                                    {{ product.stock }} In Stock
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td class="fw-semibold">
+                                ₹{{ product.selling_price }}
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                                    <a href="{% url 'edit_product' product.id %}"
+                                       class="btn btn-warning btn-sm rounded-3 px-3">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <a href="{% url 'delete_product' product.id %}"
+                                       class="btn btn-danger btn-sm rounded-3 px-3">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                    <a href="{% url 'update_stock' product.id %}"
+                                       class="btn btn-info btn-sm text-white rounded-3 px-3">
+                                        <i class="bi bi-box-seam"></i>
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="6"
+                                class="text-center text-muted py-5">
+                                No products found
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

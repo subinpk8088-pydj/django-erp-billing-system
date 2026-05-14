@@ -1,13 +1,67 @@
+<!-- ========================= -->
+<!-- ADD CATEGORY -->
+<!-- ========================= -->
+
 {% extends 'layouts/admin_base.html' %}
 
 {% block admin_content %}
 
-<h2>Add Category</h2>
+<div class="container-fluid py-4">
 
-<form method="POST">
-    {% csrf_token %}
-    <input type="text" name="name" placeholder="Category Name" required class="form-control mb-2">
-    <button type="submit" class="btn btn-success">Save</button>
-</form>
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-header bg-white border-0 p-4">
+                    <h2 class="fw-bold mb-1">Add Category</h2>
+                    <p class="text-muted mb-0">
+                        Create new product category
+                    </p>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="form-floating mb-4">
+                            <input type="text"
+                                   name="name"
+                                   id="categoryName"
+                                   class="form-control rounded-3 shadow-sm"
+                                   placeholder="Category Name"
+                                   required>
+
+                            <label for="categoryName">
+                                Category Name
+                            </label>
+                        </div>
+
+                        <div class="d-flex gap-3 flex-wrap">
+
+                            <button type="submit"
+                                    class="btn btn-primary px-4 py-2 rounded-3">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Save Category
+                            </button>
+
+                            <a href="{% url 'category_list' %}"
+                               class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
 
 {% endblock %}

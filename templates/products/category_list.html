@@ -1,23 +1,74 @@
+<!-- ========================= -->
+<!-- CATEGORY LIST -->
+<!-- ========================= -->
+
 {% extends 'layouts/admin_base.html' %}
 
 {% block admin_content %}
 
-<h2>Categories</h2>
+<div class="container-fluid py-4">
 
-<a href="{% url 'add_category' %}" class="btn btn-success mb-3">
-    Add Category
-</a>
+    <div class="card border-0 shadow-sm rounded-4">
 
-<table class="table">
-    <tr>
-        <th>Name</th>
-    </tr>
+        <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-    {% for cat in categories %}
-    <tr>
-        <td>{{ cat.name }}</td>
-    </tr>
-    {% endfor %}
-</table>
+            <div>
+                <h2 class="fw-bold mb-1">Categories</h2>
+                <p class="text-muted mb-0">
+                    Manage all categories
+                </p>
+            </div>
+
+            <a href="{% url 'add_category' %}"
+               class="btn btn-primary rounded-3 px-4 py-2">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add Category
+            </a>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3">Category Name</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for cat in categories %}
+
+                        <tr>
+                            <td class="py-3 fw-medium">
+                                {{ cat.name }}
+                            </td>
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td class="text-center text-muted py-5">
+                                No categories found
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}
