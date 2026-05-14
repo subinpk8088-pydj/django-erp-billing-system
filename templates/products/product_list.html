@@ -8,142 +8,125 @@
 
 <div class="container-fluid py-4">
 
-    <div class="card border-0 shadow-sm rounded-4">
+    <!-- PAGE HEADER -->
 
-        <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
-            <div>
-                <h2 class="fw-bold mb-1">Products</h2>
+        <div>
 
-                <p class="text-muted mb-0">
-                    Manage inventory products
-                </p>
-            </div>
+            <h2 class="fw-bold mb-1">
+                Products
+            </h2>
 
-            <a href="{% url 'add_product' %}"
-               class="btn btn-primary rounded-3 px-4 py-2">
-                <i class="bi bi-plus-circle me-2"></i>
-                Add Product
-            </a>
+            <p class="text-muted mb-0">
+                Professional inventory and stock management
+            </p>
 
         </div>
 
-        <div class="card-body p-4">
+        <a href="{% url 'add_product' %}"
+           class="btn btn-primary px-4 py-3 rounded-4">
 
-            <div class="row mb-4">
-                <div class="col-md-4">
+            <i class="bi bi-plus-circle-fill me-2"></i>
 
-                    <div class="input-group shadow-sm">
+            Add Product
 
-                        <span class="input-group-text bg-white border-end-0 rounded-start-3">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
+        </a>
 
-                        <input type="text"
-                               class="form-control border-start-0 rounded-end-3"
-                               placeholder="Search products...">
+    </div>
 
-                    </div>
+
+
+    <!-- STATS -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="product-overview-card">
+
+                <div class="overview-icon bg-primary-subtle text-primary">
+
+                    <i class="bi bi-box-seam-fill"></i>
 
                 </div>
+
+                <div>
+
+                    <span>Total Products</span>
+
+                    <h3>{{ products|length }}</h3>
+
+                </div>
+
             </div>
 
-            <div class="table-responsive">
+        </div>
 
-                <table class="table align-middle table-hover">
 
-                    <thead class="table-light">
+        <div class="col-lg-3 col-md-6">
 
-                        <tr>
-                            <th class="py-3">Name</th>
-                            <th class="py-3">SKU</th>
-                            <th class="py-3">Category</th>
-                            <th class="py-3">Stock</th>
-                            <th class="py-3">Price</th>
-                            <th class="py-3 text-center">Actions</th>
-                        </tr>
+            <div class="product-overview-card">
 
-                    </thead>
+                <div class="overview-icon bg-success-subtle text-success">
 
-                    <tbody>
+                    <i class="bi bi-check-circle-fill"></i>
 
-                    {% for product in products %}
+                </div>
 
-                        <tr>
+                <div>
 
-                            <td class="fw-semibold py-3">
-                                {{ product.name }}
-                            </td>
+                    <span>In Stock</span>
 
-                            <td>
-                                {{ product.sku }}
-                            </td>
+                    <h3>Available</h3>
 
-                            <td>
-                                {{ product.category.name|default:"No Category" }}
-                            </td>
+                </div>
 
-                            <td>
+            </div>
 
-                                {% if product.stock <= product.low_stock_threshold %}
+        </div>
 
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
-                                    {{ product.stock }} Low
-                                </span>
 
-                                {% else %}
+        <div class="col-lg-3 col-md-6">
 
-                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
-                                    {{ product.stock }} In Stock
-                                </span>
+            <div class="product-overview-card">
 
-                                {% endif %}
+                <div class="overview-icon bg-warning-subtle text-warning">
 
-                            </td>
+                    <i class="bi bi-bar-chart-fill"></i>
 
-                            <td class="fw-semibold">
-                                ₹{{ product.selling_price }}
-                            </td>
+                </div>
 
-                            <td>
+                <div>
 
-                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    <span>Inventory</span>
 
-                                    <a href="{% url 'edit_product' product.id %}"
-                                       class="btn btn-warning btn-sm rounded-3 px-3">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
+                    <h3>Tracked</h3>
 
-                                    <a href="{% url 'delete_product' product.id %}"
-                                       class="btn btn-danger btn-sm rounded-3 px-3">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                </div>
 
-                                    <a href="{% url 'update_stock' product.id %}"
-                                       class="btn btn-info btn-sm text-white rounded-3 px-3">
-                                        <i class="bi bi-box-seam"></i>
-                                    </a>
+            </div>
 
-                                </div>
+        </div>
 
-                            </td>
 
-                        </tr>
+        <div class="col-lg-3 col-md-6">
 
-                    {% empty %}
+            <div class="product-overview-card">
 
-                        <tr>
-                            <td colspan="6"
-                                class="text-center text-muted py-5">
-                                No products found
-                            </td>
-                        </tr>
+                <div class="overview-icon bg-danger-subtle text-danger">
 
-                    {% endfor %}
+                    <i class="bi bi-exclamation-circle-fill"></i>
 
-                    </tbody>
+                </div>
 
-                </table>
+                <div>
+
+                    <span>Stock Alerts</span>
+
+                    <h3>Monitor</h3>
+
+                </div>
 
             </div>
 
@@ -151,6 +134,505 @@
 
     </div>
 
+
+
+    <!-- MAIN TABLE CARD -->
+
+    <div class="card border-0 product-table-card">
+
+        <!-- HEADER -->
+
+        <div class="card-header bg-white border-0 p-4">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        Product Inventory
+                    </h5>
+
+                    <p class="text-muted mb-0 small">
+                        Complete inventory product list
+                    </p>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="search-wrapper">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           placeholder="Search products...">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="table-responsive">
+
+            <table class="table align-middle mb-0 product-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Product</th>
+
+                        <th>SKU</th>
+
+                        <th>Category</th>
+
+                        <th>Stock Status</th>
+
+                        <th>Price</th>
+
+                        <th class="text-center">Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for product in products %}
+
+                    <tr>
+
+                        <!-- PRODUCT -->
+
+                        <td>
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="product-avatar">
+
+                                    {{ product.name|slice:":1"|upper }}
+
+                                </div>
+
+                                <div>
+
+                                    <h6 class="mb-1 fw-bold">
+
+                                        {{ product.name }}
+
+                                    </h6>
+
+                                    <small class="text-muted">
+                                        Inventory Product
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- SKU -->
+
+                        <td>
+
+                            <span class="sku-badge">
+
+                                {{ product.sku }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- CATEGORY -->
+
+                        <td>
+
+                            <span class="category-pill">
+
+                                {{ product.category.name|default:"No Category" }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- STOCK -->
+
+                        <td>
+
+                            {% if product.stock <= product.low_stock_threshold %}
+
+                            <span class="stock-badge low-stock">
+
+                                <i class="bi bi-exclamation-circle-fill me-1"></i>
+
+                                {{ product.stock }} Low
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="stock-badge in-stock">
+
+                                <i class="bi bi-check-circle-fill me-1"></i>
+
+                                {{ product.stock }} In Stock
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- PRICE -->
+
+                        <td>
+
+                            <div class="price-tag">
+
+                                ₹{{ product.selling_price }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <a href="{% url 'edit_product' product.id %}"
+                                   class="action-btn warning-btn">
+
+                                    <i class="bi bi-pencil-fill"></i>
+
+                                </a>
+
+                                <a href="{% url 'delete_product' product.id %}"
+                                   class="action-btn danger-btn">
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </a>
+
+                                <a href="{% url 'update_stock' product.id %}"
+                                   class="action-btn info-btn">
+
+                                    <i class="bi bi-box-seam-fill"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            <div class="empty-products">
+
+                                <i class="bi bi-box-seam"></i>
+
+                                <h5>No Products Found</h5>
+
+                                <p>
+                                    Start by adding your first inventory product
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+
+<style>
+
+    /* OVERVIEW CARDS */
+
+    .product-overview-card{
+        background:#fff;
+        border-radius:26px;
+        padding:1.5rem;
+        display:flex;
+        align-items:center;
+        gap:1rem;
+        border:1px solid #EEF2F7;
+        box-shadow:0 15px 35px rgba(0,0,0,0.05);
+    }
+
+    .overview-icon{
+        width:68px;
+        height:68px;
+        border-radius:22px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1.5rem;
+    }
+
+    .product-overview-card span{
+        display:block;
+        color:#6B7280;
+        font-size:0.78rem;
+    }
+
+    .product-overview-card h3{
+        margin:0;
+        font-weight:700;
+    }
+
+    /* TABLE CARD */
+
+    .product-table-card{
+        border-radius:30px;
+        overflow:hidden;
+        box-shadow:0 20px 50px rgba(0,0,0,0.06);
+    }
+
+    /* SEARCH */
+
+    .search-wrapper{
+        position:relative;
+        width:320px;
+        max-width:100%;
+    }
+
+    .search-wrapper i{
+        position:absolute;
+        top:50%;
+        left:16px;
+        transform:translateY(-50%);
+        color:#9CA3AF;
+    }
+
+    .search-wrapper input{
+        width:100%;
+        height:52px;
+        border:1px solid #E5E7EB;
+        border-radius:16px;
+        padding:0 18px 0 46px;
+        background:#F9FAFB;
+        transition:0.3s ease;
+    }
+
+    .search-wrapper input:focus{
+        border-color:#2563EB;
+        background:#fff;
+        outline:none;
+        box-shadow:0 0 0 4px rgba(37,99,235,0.1);
+    }
+
+    /* TABLE */
+
+    .product-table thead{
+        background:#F9FAFB;
+    }
+
+    .product-table thead th{
+        padding:1.2rem 1.5rem;
+        font-size:0.78rem;
+        text-transform:uppercase;
+        letter-spacing:0.5px;
+        color:#6B7280;
+        font-weight:700;
+        border:none;
+    }
+
+    .product-table tbody td{
+        padding:1.3rem 1.5rem;
+        vertical-align:middle;
+        border-top:1px solid #F1F5F9;
+    }
+
+    .product-table tbody tr{
+        transition:0.3s ease;
+    }
+
+    .product-table tbody tr:hover{
+        background:#FAFBFF;
+    }
+
+    /* PRODUCT AVATAR */
+
+    .product-avatar{
+        width:54px;
+        height:54px;
+        border-radius:18px;
+        background:#DBEAFE;
+        color:#2563EB;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:700;
+        font-size:1rem;
+        flex-shrink:0;
+    }
+
+    /* SKU */
+
+    .sku-badge{
+        background:#F3F4F6;
+        padding:0.55rem 0.9rem;
+        border-radius:999px;
+        font-size:0.78rem;
+        font-weight:600;
+        color:#374151;
+    }
+
+    /* CATEGORY */
+
+    .category-pill{
+        background:#EFF6FF;
+        color:#2563EB;
+        padding:0.55rem 0.95rem;
+        border-radius:999px;
+        font-size:0.78rem;
+        font-weight:600;
+    }
+
+    /* STOCK */
+
+    .stock-badge{
+        display:inline-flex;
+        align-items:center;
+        padding:0.55rem 1rem;
+        border-radius:999px;
+        font-size:0.78rem;
+        font-weight:600;
+    }
+
+    .in-stock{
+        background:#ECFDF3;
+        color:#16A34A;
+    }
+
+    .low-stock{
+        background:#FEF2F2;
+        color:#DC2626;
+    }
+
+    /* PRICE */
+
+    .price-tag{
+        font-weight:700;
+        color:#111827;
+    }
+
+    /* ACTION BUTTONS */
+
+    .action-btn{
+        width:42px;
+        height:42px;
+        border-radius:14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-decoration:none;
+        transition:0.3s ease;
+    }
+
+    .action-btn:hover{
+        transform:translateY(-2px);
+    }
+
+    .warning-btn{
+        background:#FEF3C7;
+        color:#D97706;
+    }
+
+    .danger-btn{
+        background:#FEE2E2;
+        color:#DC2626;
+    }
+
+    .info-btn{
+        background:#DBEAFE;
+        color:#2563EB;
+    }
+
+    /* EMPTY */
+
+    .empty-products{
+        text-align:center;
+        padding:5rem 2rem;
+    }
+
+    .empty-products i{
+        font-size:3rem;
+        color:#D1D5DB;
+    }
+
+    .empty-products h5{
+        margin-top:1rem;
+        font-weight:700;
+    }
+
+    .empty-products p{
+        color:#6B7280;
+        margin-bottom:0;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:768px){
+
+        .search-wrapper{
+            width:100%;
+        }
+
+        .product-table thead{
+            display:none;
+        }
+
+        .product-table tbody tr{
+            display:block;
+            background:#fff;
+            margin:1rem;
+            border-radius:24px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .product-table tbody td{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:1rem 1.2rem;
+            border:none;
+        }
+
+    }
+
+</style>
 
 {% endblock %}

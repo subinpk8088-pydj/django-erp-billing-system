@@ -9,46 +9,169 @@
 <div class="container-fluid py-4">
 
     <div class="row justify-content-center">
-        <div class="col-lg-6">
 
-            <div class="card border-0 shadow-sm rounded-4">
+        <div class="col-xl-5 col-lg-6">
 
-                <div class="card-header bg-white border-0 p-4">
-                    <h2 class="fw-bold mb-1">Add Category</h2>
-                    <p class="text-muted mb-0">
-                        Create new product category
-                    </p>
+            <div class="card border-0 category-card overflow-hidden">
+
+                <!-- TOP HEADER -->
+
+                <div class="category-top-header">
+
+                    <div class="header-pattern"></div>
+
+                    <div class="position-relative">
+
+                        <div class="category-icon">
+
+                            <i class="bi bi-grid-fill"></i>
+
+                        </div>
+
+                        <h2 class="fw-bold text-white mb-1">
+                            Add Category
+                        </h2>
+
+                        <p class="text-white-50 mb-0">
+                            Organize products professionally
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <div class="card-body p-4">
+
+
+                <!-- BODY -->
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <!-- STATS -->
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-6">
+
+                            <div class="mini-card">
+
+                                <div class="mini-icon bg-primary-subtle text-primary">
+
+                                    <i class="bi bi-tags-fill"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span>Total Categories</span>
+
+                                    <h6>24</h6>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-6">
+
+                            <div class="mini-card">
+
+                                <div class="mini-icon bg-success-subtle text-success">
+
+                                    <i class="bi bi-box-seam-fill"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span>Products</span>
+
+                                    <h6>420+</h6>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- FORM -->
 
                     <form method="POST">
+
                         {% csrf_token %}
 
-                        <div class="form-floating mb-4">
+                        <div class="form-floating modern-floating mb-4">
+
                             <input type="text"
                                    name="name"
                                    id="categoryName"
-                                   class="form-control rounded-3 shadow-sm"
+                                   class="form-control modern-input"
                                    placeholder="Category Name"
                                    required>
 
                             <label for="categoryName">
+
+                                <i class="bi bi-bookmark-fill me-2"></i>
+
                                 Category Name
+
                             </label>
+
                         </div>
+
+
+
+                        <!-- PREVIEW -->
+
+                        <div class="preview-box mb-4">
+
+                            <div class="preview-label">
+
+                                Live Preview
+
+                            </div>
+
+                            <div class="preview-content">
+
+                                <div class="preview-badge">
+
+                                    <i class="bi bi-folder-fill"></i>
+
+                                </div>
+
+                                <span id="previewText">
+                                    Your category name
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- ACTIONS -->
 
                         <div class="d-flex gap-3 flex-wrap">
 
                             <button type="submit"
-                                    class="btn btn-primary px-4 py-2 rounded-3">
-                                <i class="bi bi-check-circle me-2"></i>
+                                    class="btn btn-primary btn-modern px-4 py-3">
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
                                 Save Category
+
                             </button>
 
                             <a href="{% url 'category_list' %}"
-                               class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                               class="btn btn-light border btn-modern px-4 py-3">
+
                                 Cancel
+
                             </a>
 
                         </div>
@@ -60,8 +183,161 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
+
+
+
+<style>
+
+    .category-card{
+        border-radius:28px;
+        background:#fff;
+        box-shadow:0 20px 50px rgba(0,0,0,0.06);
+    }
+
+    .category-top-header{
+        position:relative;
+        padding:3rem;
+        background:linear-gradient(135deg,#2563EB,#1D4ED8);
+        overflow:hidden;
+    }
+
+    .header-pattern{
+        position:absolute;
+        inset:0;
+        background-image:
+        radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+        background-size:18px 18px;
+    }
+
+    .category-icon{
+        width:74px;
+        height:74px;
+        border-radius:22px;
+        background:rgba(255,255,255,0.16);
+        backdrop-filter:blur(10px);
+        color:#fff;
+        font-size:1.6rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin-bottom:1.5rem;
+    }
+
+    .mini-card{
+        background:#F9FAFB;
+        border-radius:20px;
+        padding:1rem;
+        display:flex;
+        align-items:center;
+        gap:1rem;
+        border:1px solid #EEF2F7;
+    }
+
+    .mini-icon{
+        width:52px;
+        height:52px;
+        border-radius:16px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1.2rem;
+    }
+
+    .mini-card span{
+        display:block;
+        font-size:0.75rem;
+        color:#6B7280;
+    }
+
+    .mini-card h6{
+        margin:0;
+        font-weight:700;
+        font-size:1.1rem;
+    }
+
+    .modern-input{
+        height:64px;
+        border-radius:18px;
+        border:1px solid #E5E7EB;
+        box-shadow:none;
+        padding-top:1.4rem;
+    }
+
+    .modern-input:focus{
+        border-color:#2563EB;
+        box-shadow:0 0 0 4px rgba(37,99,235,0.1);
+    }
+
+    .modern-floating label{
+        padding-left:1rem;
+        color:#6B7280;
+    }
+
+    .preview-box{
+        background:#F9FAFB;
+        border-radius:22px;
+        padding:1.2rem;
+        border:1px dashed #D1D5DB;
+    }
+
+    .preview-label{
+        font-size:0.75rem;
+        color:#6B7280;
+        margin-bottom:0.9rem;
+    }
+
+    .preview-content{
+        display:flex;
+        align-items:center;
+        gap:1rem;
+    }
+
+    .preview-badge{
+        width:54px;
+        height:54px;
+        border-radius:16px;
+        background:#DBEAFE;
+        color:#2563EB;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1.2rem;
+    }
+
+    .preview-content span{
+        font-weight:600;
+        color:#111827;
+    }
+
+    .btn-modern{
+        border-radius:16px;
+        font-weight:600;
+        transition:0.3s ease;
+    }
+
+    .btn-modern:hover{
+        transform:translateY(-2px);
+    }
+
+</style>
+
+<script>
+
+    const categoryInput = document.getElementById('categoryName');
+
+    const previewText  = document.getElementById('previewText');
+
+    categoryInput.addEventListener('input', function(){
+
+        previewText.innerText =
+            this.value || 'Your category name';
+
+    });
+
+</script>
 
 {% endblock %}
