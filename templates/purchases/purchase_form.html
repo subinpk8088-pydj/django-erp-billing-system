@@ -1,130 +1,128 @@
-<!-- ========================= -->
-<!-- CREATE PURCHASE -->
-<!-- ========================= -->
-
 {% extends 'layouts/admin_base.html' %}
 
 {% block admin_content %}
 
 <div class="container-fluid py-4">
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card border-0 shadow-sm rounded-4">
 
-        <!-- HEADER -->
-        <div class="card-header bg-white border-0 p-4 p-md-5">
+        <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
 
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
 
-                <div>
+                <h2 class="fw-bold mb-1">
+                    Create Purchase
+                </h2>
 
-                    <h2 class="fw-bold mb-1">
-                        Create Purchase
-                    </h2>
-
-                    <p class="text-muted mb-0">
-                        Add supplier purchase invoice and products
-                    </p>
-
-                </div>
-
-                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
-                     style="width:70px;height:70px;">
-
-                    <i class="bi bi-cart-check text-primary fs-2"></i>
-
-                </div>
+                <p class="text-muted mb-0">
+                    Add supplier purchase invoice and products
+                </p>
 
             </div>
 
+            <button type="button"
+                    id="add-item-btn"
+                    class="btn btn-primary">
+
+                Add Product
+
+            </button>
+
         </div>
 
-        <!-- BODY -->
-        <div class="card-body p-4 p-md-5 bg-light bg-opacity-25">
+        <div class="card-body p-4 bg-light">
 
             <form method="POST">
 
                 {% csrf_token %}
 
-                <!-- MAIN FORM -->
-                <div class="row">
-
-                    <div class="col-12">
-
-                        <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-                            <div class="card-body p-4">
-
-                                <h5 class="fw-bold mb-4">
-                                    Purchase Information
-                                </h5>
-
-                                {{ form.as_p }}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- PRODUCTS -->
-                <div class="card border-0 shadow-sm rounded-4">
+                <!-- PURCHASE FORM -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
 
                     <div class="card-body p-4">
 
-                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-
-                            <h5 class="fw-bold mb-0">
-                                Purchase Items
-                            </h5>
-
-                            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
-                                Products
-                            </span>
-
-                        </div>
-
-                        {{ formset.management_form }}
-
-                        {% for form in formset %}
-
-                        <div class="border rounded-4 p-4 mb-4 bg-white shadow-sm">
-
-                            <div class="row">
-
-                                {{ form.as_p }}
-
-                            </div>
-
-                        </div>
-
-                        {% endfor %}
+                        {{ form.as_p }}
 
                     </div>
 
                 </div>
 
-                <!-- BUTTONS -->
-                <div class="mt-4 d-flex gap-3 flex-wrap">
+                <!-- FORMSET -->
+                {{ formset.management_form }}
 
-                    <button type="submit"
-                            class="btn btn-success px-4 py-3 rounded-3 shadow-sm fw-semibold">
+                <div id="form-container">
 
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        Save Purchase
+                    {% for item_form in formset %}
 
-                    </button>
+                    <div class="item-form card border-0 shadow-sm rounded-4 mb-4">
 
-                    <a href="{% url 'purchase_list' %}"
-                       class="btn btn-outline-secondary px-4 py-3 rounded-3 fw-semibold">
+                        <div class="card-body">
 
-                        <i class="bi bi-arrow-left me-2"></i>
-                        Back
+                            {{ item_form.id }}
 
-                    </a>
+                            <div class="row g-3">
+
+                                <!-- PRODUCT -->
+                                <div class="col-md-4">
+
+                                    <label class="fw-semibold mb-2">
+                                        Product
+                                    </label>
+
+                                    {{ item_form.product }}
+
+                                </div>
+
+                                <!-- QUANTITY -->
+                                <div class="col-md-3">
+
+                                    <label class="fw-semibold mb-2">
+                                        Quantity
+                                    </label>
+
+                                    {{ item_form.quantity }}
+
+                                </div>
+
+                                <!-- PRICE -->
+                                <div class="col-md-3">
+
+                                    <label class="fw-semibold mb-2">
+                                        Purchase Price
+                                    </label>
+
+                                    {{ item_form.purchase_price }}
+
+                                </div>
+
+                                <!-- REMOVE -->
+                                <div class="col-md-2 d-flex align-items-end">
+
+                                    <button type="button"
+                                            class="btn btn-danger remove-btn w-100">
+
+                                        Remove
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
 
                 </div>
+
+                <button type="submit"
+                        class="btn btn-success px-4 py-2">
+
+                    Save Purchase
+
+                </button>
 
             </form>
 
@@ -136,55 +134,168 @@
 
 <style>
 
-    form label{
-        font-weight:600;
-        color:#111827;
-        margin-bottom:8px;
-        display:block;
-        font-size:14px;
-    }
+form input,
+form select{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #ddd;
+}
 
-    form input,
-    form select,
-    form textarea{
-        width:100%;
-        border:1px solid #E5E7EB;
-        border-radius:14px;
-        padding:14px 16px;
-        min-height:54px;
-        background:#fff;
-        transition:0.3s ease;
-        box-shadow:none;
-    }
+</style>
 
-    form input:focus,
-    form select:focus,
-    form textarea:focus{
-        border-color:#2563EB;
-        box-shadow:0 0 0 4px rgba(37,99,235,0.12);
-        outline:none;
-    }
+<script>
 
-    form p{
-        margin-bottom:22px;
-    }
+document.addEventListener('DOMContentLoaded', function () {
 
-    .btn{
-        transition:0.3s ease;
-    }
+    const formContainer =
+        document.getElementById('form-container');
 
-    .btn:hover{
-        transform:translateY(-2px);
-    }
+    const addBtn =
+        document.getElementById('add-item-btn');
 
-    @media(max-width:768px){
+    const totalForms =
+        document.getElementById('id_items-TOTAL_FORMS');
 
-        .btn{
-            width:100%;
+
+    // =====================================
+    // FETCH PRODUCT PRICE
+    // =====================================
+
+    async function fetchPrice(productSelect){
+
+        const productId = productSelect.value;
+
+        if(!productId){
+            return;
+        }
+
+        const row =
+            productSelect.closest('.item-form');
+
+        const priceInput =
+            row.querySelector(
+                'input[name$="purchase_price"]'
+            );
+
+        try{
+
+            const response = await fetch(
+                `/purchases/ajax/product-price/?product_id=${productId}`
+            );
+
+            const data = await response.json();
+
+            if(data.success){
+
+                priceInput.value =
+                    data.purchase_price;
+
+            }
+
+        }catch(error){
+
+            console.log(error);
+
         }
 
     }
 
-</style>
+
+    // =====================================
+    // PRODUCT CHANGE EVENT
+    // =====================================
+
+    formContainer.addEventListener('change', function(e){
+
+        if(
+            e.target.matches(
+                'select[name$="product"]'
+            )
+        ){
+
+            fetchPrice(e.target);
+
+        }
+
+    });
+
+
+    // =====================================
+    // ADD NEW ROW
+    // =====================================
+
+    addBtn.addEventListener('click', function(){
+
+        const formCount =
+            parseInt(totalForms.value);
+
+        const firstForm =
+            document.querySelector('.item-form');
+
+        const newForm =
+            firstForm.cloneNode(true);
+
+        newForm.innerHTML =
+            newForm.innerHTML.replace(
+                /items-(\d+)-/g,
+                `items-${formCount}-`
+            );
+
+        // CLEAR VALUES
+        newForm.querySelectorAll(
+            'input'
+        ).forEach(input => {
+
+            if(input.type !== 'hidden'){
+
+                input.value = '';
+
+            }
+
+        });
+
+        newForm.querySelectorAll(
+            'select'
+        ).forEach(select => {
+
+            select.selectedIndex = 0;
+
+        });
+
+        formContainer.appendChild(newForm);
+
+        totalForms.value = formCount + 1;
+
+    });
+
+
+    // =====================================
+    // REMOVE ROW
+    // =====================================
+
+    formContainer.addEventListener('click', function(e){
+
+        if(e.target.classList.contains('remove-btn')){
+
+            const forms =
+                document.querySelectorAll('.item-form');
+
+            if(forms.length > 1){
+
+                e.target.closest('.item-form').remove();
+
+                totalForms.value =
+                    document.querySelectorAll('.item-form').length;
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
 
 {% endblock %}

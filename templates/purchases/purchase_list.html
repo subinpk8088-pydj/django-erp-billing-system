@@ -8,7 +8,7 @@
 
 <div class="container-fluid py-4">
 
-    <div class="card border-0 shadow-sm rounded-4">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
         <!-- HEADER -->
         <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -41,17 +41,20 @@
             <!-- SEARCH -->
             <div class="row mb-4">
 
-                <div class="col-md-4">
+                <div class="col-lg-4 col-md-6">
 
                     <div class="input-group shadow-sm">
 
                         <span class="input-group-text bg-white border-end-0 rounded-start-3">
+
                             <i class="bi bi-search text-muted"></i>
+
                         </span>
 
                         <input type="text"
+                               id="searchInput"
                                class="form-control border-start-0 rounded-end-3"
-                               placeholder="Search purchases...">
+                               placeholder="Search invoice or supplier...">
 
                     </div>
 
@@ -62,21 +65,63 @@
             <!-- TABLE -->
             <div class="table-responsive">
 
-                <table class="table align-middle table-hover">
+                <table class="table align-middle table-hover"
+                       id="purchaseTable">
 
                     <thead class="table-light">
 
                         <tr>
-                            <th class="py-3">Invoice No</th>
-                            <th class="py-3">Supplier</th>
-                            <th class="py-3">Total</th>
-                            <th class="py-3">Date</th>
-                            <th class="py-3 text-center">Actions</th>
+
+                            <!-- INVOICE -->
+                            <th class="py-3 sortable"
+                                onclick="sortTable(0, 'text')">
+
+                                Invoice No
+
+                                <i class="bi bi-arrow-down-up ms-2"></i>
+
+                            </th>
+
+                            <!-- SUPPLIER -->
+                            <th class="py-3 sortable"
+                                onclick="sortTable(1, 'text')">
+
+                                Supplier
+
+                                <i class="bi bi-arrow-down-up ms-2"></i>
+
+                            </th>
+
+                            <!-- TOTAL -->
+                            <th class="py-3 sortable"
+                                onclick="sortTable(2, 'number')">
+
+                                Total
+
+                                <i class="bi bi-arrow-down-up ms-2"></i>
+
+                            </th>
+
+                            <!-- DATE -->
+                            <th class="py-3 sortable"
+                                onclick="sortTable(3, 'date')">
+
+                                Date
+
+                                <i class="bi bi-arrow-down-up ms-2"></i>
+
+                            </th>
+
+                            <!-- ACTIONS -->
+                            <th class="py-3 text-center">
+                                Actions
+                            </th>
+
                         </tr>
 
                     </thead>
 
-                    <tbody>
+                    <tbody id="purchaseTableBody">
 
                         {% for purchase in purchases %}
 
@@ -90,34 +135,37 @@
                                 {{ purchase.supplier.name }}
                             </td>
 
-                            <td class="fw-semibold text-success">
+                            <td class="fw-bold text-success">
                                 ₹{{ purchase.total_amount }}
                             </td>
 
                             <td>
-                                {{ purchase.date }}
+                                {{ purchase.date|date:"d M Y" }}
                             </td>
 
                             <td>
 
                                 <div class="d-flex justify-content-center gap-2 flex-wrap">
 
+                                    <!-- VIEW -->
                                     <a href="{% url 'purchase_detail' purchase.id %}"
-                                       class="btn btn-info btn-sm text-white rounded-3 px-3">
+                                       class="btn btn-info btn-sm text-white rounded-3 px-3 action-btn">
 
                                         <i class="bi bi-eye"></i>
 
                                     </a>
 
+                                    <!-- EDIT -->
                                     <a href="{% url 'edit_purchase' purchase.id %}"
-                                       class="btn btn-warning btn-sm rounded-3 px-3">
+                                       class="btn btn-warning btn-sm rounded-3 px-3 action-btn">
 
                                         <i class="bi bi-pencil-square"></i>
 
                                     </a>
 
+                                    <!-- DELETE -->
                                     <a href="{% url 'delete_purchase' purchase.id %}"
-                                       class="btn btn-danger btn-sm rounded-3 px-3">
+                                       class="btn btn-danger btn-sm rounded-3 px-3 action-btn">
 
                                         <i class="bi bi-trash"></i>
 
@@ -155,5 +203,191 @@
     </div>
 
 </div>
+
+<!-- ========================= -->
+<!-- STYLES -->
+<!-- ========================= -->
+
+<style>
+
+.table{
+    margin-bottom:0;
+}
+
+.table thead th{
+    background:#F8FAFC !important;
+    color:#111827;
+    font-size:14px;
+    font-weight:700;
+    border-bottom:none;
+    white-space:nowrap;
+}
+
+.table tbody tr{
+    transition:0.25s ease;
+}
+
+.table tbody tr:hover{
+    background:#F9FAFB;
+}
+
+.table td{
+    vertical-align:middle;
+    border-color:#EEF2F7;
+}
+
+.sortable{
+    cursor:pointer;
+    user-select:none;
+    transition:0.25s ease;
+}
+
+.sortable:hover{
+    color:#2563EB;
+}
+
+.action-btn{
+    transition:0.25s ease;
+}
+
+.action-btn:hover{
+    transform:translateY(-2px);
+}
+
+.form-control{
+    border:1px solid #E5E7EB;
+    min-height:48px;
+}
+
+.form-control:focus{
+    box-shadow:none;
+    border-color:#2563EB;
+}
+
+.card{
+    transition:0.3s ease;
+}
+
+</style>
+
+<!-- ========================= -->
+<!-- SCRIPT -->
+<!-- ========================= -->
+
+<script>
+
+let sortDirection = {};
+
+
+// =========================================
+// SEARCH FUNCTION
+// =========================================
+
+document.getElementById('searchInput')
+.addEventListener('keyup', function(){
+
+    const value =
+        this.value.toLowerCase();
+
+    const rows =
+        document.querySelectorAll(
+            '#purchaseTableBody tr'
+        );
+
+    rows.forEach(row => {
+
+        const text =
+            row.innerText.toLowerCase();
+
+        row.style.display =
+            text.includes(value)
+            ? ''
+            : 'none';
+
+    });
+
+});
+
+
+// =========================================
+// SORT FUNCTION
+// =========================================
+
+function sortTable(columnIndex, type){
+
+    const table =
+        document.getElementById('purchaseTable');
+
+    const tbody =
+        table.querySelector('tbody');
+
+    const rows =
+        Array.from(
+            tbody.querySelectorAll('tr')
+        );
+
+    sortDirection[columnIndex] =
+        !sortDirection[columnIndex];
+
+    const asc =
+        sortDirection[columnIndex];
+
+    rows.sort((a, b) => {
+
+        let valA =
+            a.children[columnIndex]
+             .innerText
+             .trim();
+
+        let valB =
+            b.children[columnIndex]
+             .innerText
+             .trim();
+
+        // NUMBER SORT
+        if(type === 'number'){
+
+            valA =
+                parseFloat(
+                    valA.replace(/[₹,]/g, '')
+                ) || 0;
+
+            valB =
+                parseFloat(
+                    valB.replace(/[₹,]/g, '')
+                ) || 0;
+
+        }
+
+        // DATE SORT
+        if(type === 'date'){
+
+            valA = new Date(valA);
+            valB = new Date(valB);
+
+        }
+
+        // TEXT SORT
+        if(valA < valB){
+            return asc ? -1 : 1;
+        }
+
+        if(valA > valB){
+            return asc ? 1 : -1;
+        }
+
+        return 0;
+
+    });
+
+    rows.forEach(row => {
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

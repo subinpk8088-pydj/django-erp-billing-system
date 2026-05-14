@@ -2,6 +2,8 @@
 
 from decimal import Decimal
 
+from django.http import JsonResponse
+
 from django.shortcuts import (
     render,
     redirect,
@@ -18,13 +20,22 @@ from accounts.decorators import admin_required
 
 from inventory.utils import create_stock_movement
 
-from .models import Purchase, PurchaseItem
+from products.models import Product
+
+from .models import (
+    Purchase,
+    PurchaseItem
+)
 
 from .forms import (
     PurchaseForm,
     PurchaseItemFormSet
 )
 
+
+# =========================================
+# PURCHASE LIST
+# =========================================
 
 @login_required
 @admin_required
@@ -33,21 +44,74 @@ def purchase_list(request):
     purchases = Purchase.objects.all().order_by('-id')
 
     return render(
+
         request,
+
         'purchases/purchase_list.html',
+
         {
             'purchases': purchases
         }
     )
 
 
+# =========================================
+# AJAX PRODUCT PRICE
+# =========================================
+
+@login_required
+@admin_required
+def get_product_price(request):
+
+    product_id = request.GET.get('product_id')
+
+    try:
+
+        product = Product.objects.get(
+            id=product_id
+        )
+
+        return JsonResponse({
+
+            'success': True,
+
+            'purchase_price': str(
+                product.purchase_price
+            ),
+
+            'selling_price': str(
+                product.selling_price
+            ),
+
+            'stock': product.stock,
+
+            'product': product.name
+        })
+
+    except Product.DoesNotExist:
+
+        return JsonResponse({
+
+            'success': False
+        })
+
+
+# =========================================
+# CREATE PURCHASE
+# =========================================
+
 @login_required
 @admin_required
 def create_purchase(request):
 
-    form = PurchaseForm(request.POST or None)
+    form = PurchaseForm(
+        request.POST or None
+    )
 
-    formset = PurchaseItemFormSet(request.POST or None)
+    formset = PurchaseItemFormSet(
+        request.POST or None,
+        prefix='items'
+    )
 
     if request.method == 'POST':
 
@@ -57,26 +121,36 @@ def create_purchase(request):
 
                 with transaction.atomic():
 
-                    purchase = form.save(commit=False)
+                    purchase = form.save(
+                        commit=False
+                    )
 
                     purchase.created_by = request.user
 
                     purchase.save()
 
-                    items = formset.save(commit=False)
-
                     total = Decimal('0.00')
 
-                    if not items:
+                    items = formset.save(
+                        commit=False
+                    )
+
+                    if len(items) == 0:
 
                         messages.error(
                             request,
-                            "At least one item required"
+                            "Add at least one product"
                         )
 
-                        raise Exception()
+                        return redirect(
+                            'create_purchase'
+                        )
 
                     for item in items:
+
+                        # SKIP EMPTY FORMS
+                        if not item.product:
+                            continue
 
                         item.purchase = purchase
 
@@ -135,12 +209,15 @@ def create_purchase(request):
 
                 messages.error(
                     request,
-                    "Purchase failed"
+                    "Purchase creation failed"
                 )
 
     return render(
+
         request,
+
         'purchases/purchase_form.html',
+
         {
             'form': form,
             'formset': formset
@@ -148,23 +225,38 @@ def create_purchase(request):
     )
 
 
+# =========================================
+# PURCHASE DETAIL
+# =========================================
+
 @login_required
 @admin_required
 def purchase_detail(request, pk):
 
     purchase = get_object_or_404(
-        Purchase,
+
+        Purchase.objects.prefetch_related(
+            'items__product'
+        ),
+
         pk=pk
     )
 
     return render(
+
         request,
+
         'purchases/purchase_detail.html',
+
         {
             'purchase': purchase
         }
     )
 
+
+# =========================================
+# EDIT PURCHASE
+# =========================================
 
 @login_required
 @admin_required
@@ -182,7 +274,8 @@ def edit_purchase(request, pk):
 
     formset = PurchaseItemFormSet(
         request.POST or None,
-        instance=purchase
+        instance=purchase,
+        prefix='items'
     )
 
     if request.method == 'POST':
@@ -193,6 +286,7 @@ def edit_purchase(request, pk):
 
                 with transaction.atomic():
 
+                    # REMOVE OLD STOCK
                     old_items = PurchaseItem.objects.filter(
                         purchase=purchase
                     )
@@ -230,19 +324,19 @@ def edit_purchase(request, pk):
 
                     old_items.delete()
 
-                    purchase = form.save(
-                        commit=False
-                    )
+                    purchase = form.save()
 
-                    purchase.save()
+                    total = Decimal('0.00')
 
                     items = formset.save(
                         commit=False
                     )
 
-                    total = Decimal('0.00')
-
                     for item in items:
+
+                        # SKIP EMPTY FORMS
+                        if not item.product:
+                            continue
 
                         item.purchase = purchase
 
@@ -305,14 +399,21 @@ def edit_purchase(request, pk):
                 )
 
     return render(
+
         request,
+
         'purchases/purchase_form.html',
+
         {
             'form': form,
             'formset': formset
         }
     )
 
+
+# =========================================
+# DELETE PURCHASE
+# =========================================
 
 @login_required
 @admin_required
@@ -385,8 +486,11 @@ def delete_purchase(request, pk):
             )
 
     return render(
+
         request,
+
         'purchases/delete_purchase.html',
+
         {
             'purchase': purchase
         }

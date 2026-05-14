@@ -1,60 +1,298 @@
+<!-- ====================================== -->
+<!-- supplier_list.html -->
+<!-- ====================================== -->
+
 {% extends 'layouts/admin_base.html' %}
 
 {% block admin_content %}
 
-<h2>Suppliers</h2>
+<div class="container-fluid py-4">
 
-<a href="{% url 'add_supplier' %}"
-   class="btn btn-primary mb-3">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-    Add Supplier
+        <!-- HEADER -->
+        <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-</a>
+            <div>
 
-<table class="table table-bordered">
+                <h2 class="fw-bold mb-1">
+                    Suppliers
+                </h2>
 
-    <tr>
-        <th>Name</th>
-        <th>Company</th>
-        <th>Phone</th>
-        <th>GST</th>
-        <th>Actions</th>
-    </tr>
+                <p class="text-muted mb-0">
+                    Manage supplier records and company details
+                </p>
 
-    {% for supplier in suppliers %}
+            </div>
 
-    <tr>
+            <a href="{% url 'add_supplier' %}"
+               class="btn btn-primary px-4 py-2 rounded-3 shadow-sm">
 
-        <td>{{ supplier.name }}</td>
+                <i class="bi bi-plus-circle me-2"></i>
 
-        <td>{{ supplier.company_name }}</td>
-
-        <td>{{ supplier.phone }}</td>
-
-        <td>{{ supplier.gst_number }}</td>
-
-        <td>
-
-            <a href="{% url 'edit_supplier' supplier.id %}"
-               class="btn btn-warning btn-sm">
-
-               Edit
+                Add Supplier
 
             </a>
 
-            <a href="{% url 'delete_supplier' supplier.id %}"
-               class="btn btn-danger btn-sm">
+        </div>
 
-               Delete
+        <!-- BODY -->
+        <div class="card-body p-4">
 
-            </a>
+            <!-- SEARCH -->
+            <div class="row mb-4">
 
-        </td>
+                <div class="col-md-4">
 
-    </tr>
+                    <div class="input-group shadow-sm">
 
-    {% endfor %}
+                        <span class="input-group-text bg-white border-end-0 rounded-start-3">
 
-</table>
+                            <i class="bi bi-search text-muted"></i>
+
+                        </span>
+
+                        <input type="text"
+                               id="searchInput"
+                               class="form-control border-start-0 rounded-end-3"
+                               placeholder="Search suppliers...">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+
+                <table class="table align-middle table-hover"
+                       id="supplierTable">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th class="py-3 sortable"
+                                onclick="sortTable(0)">
+
+                                Name
+
+                                <i class="bi bi-arrow-down-up ms-2"></i>
+
+                            </th>
+
+                            <th class="py-3 sortable"
+                                onclick="sortTable(1)">
+
+                                Company
+
+                                <i class="bi bi-arrow-down-up ms-2"></i>
+
+                            </th>
+
+                            <th class="py-3">
+                                Phone
+                            </th>
+
+                            <th class="py-3">
+                                GST
+                            </th>
+
+                            <th class="py-3 text-center">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for supplier in suppliers %}
+
+                        <tr>
+
+                            <td class="fw-semibold py-3">
+                                {{ supplier.name }}
+                            </td>
+
+                            <td>
+                                {{ supplier.company_name }}
+                            </td>
+
+                            <td>
+                                {{ supplier.phone }}
+                            </td>
+
+                            <td>
+                                {{ supplier.gst_number }}
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                                    <a href="{% url 'edit_supplier' supplier.id %}"
+                                       class="btn btn-warning btn-sm rounded-3 px-3">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </a>
+
+                                    <a href="{% url 'delete_supplier' supplier.id %}"
+                                       class="btn btn-danger btn-sm rounded-3 px-3">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center text-muted py-5">
+
+                                No suppliers found
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.table th{
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.table td,
+.table th{
+    vertical-align:middle;
+}
+
+.sortable{
+    cursor:pointer;
+    user-select:none;
+    transition:0.3s ease;
+}
+
+.sortable:hover{
+    color:#2563EB;
+}
+
+.btn{
+    transition:0.3s ease;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+</style>
+
+<script>
+
+// ======================================
+// SEARCH FUNCTION
+// ======================================
+
+document.getElementById('searchInput')
+.addEventListener('keyup', function(){
+
+    const value =
+        this.value.toLowerCase();
+
+    const rows =
+        document.querySelectorAll(
+            '#supplierTable tbody tr'
+        );
+
+    rows.forEach(row => {
+
+        row.style.display =
+            row.innerText.toLowerCase()
+            .includes(value)
+            ? ''
+            : 'none';
+
+    });
+
+});
+
+
+// ======================================
+// SORT FUNCTION
+// ======================================
+
+let sortDirection = true;
+
+function sortTable(columnIndex){
+
+    const table =
+        document.getElementById('supplierTable');
+
+    const tbody =
+        table.querySelector('tbody');
+
+    const rows =
+        Array.from(tbody.querySelectorAll('tr'));
+
+    rows.sort((a, b) => {
+
+        const textA =
+            a.children[columnIndex]
+            .innerText
+            .toLowerCase();
+
+        const textB =
+            b.children[columnIndex]
+            .innerText
+            .toLowerCase();
+
+        if(sortDirection){
+
+            return textA.localeCompare(textB);
+
+        }else{
+
+            return textB.localeCompare(textA);
+
+        }
+
+    });
+
+    sortDirection = !sortDirection;
+
+    rows.forEach(row => {
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+</script>
 
 {% endblock %}
